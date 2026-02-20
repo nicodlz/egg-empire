@@ -14,7 +14,11 @@
 	let overlayElement: HTMLDivElement;
 
 	const allAchievements = manager.getAllAchievements();
-	const progress = $derived(manager.getProgress());
+	// Read reactive unlockedCount to trigger re-derivation when achievements change
+	const progress = $derived.by(() => {
+		void manager.unlockedCount;
+		return manager.getProgress();
+	});
 
 	$effect(() => {
 		if (!panelElement || !overlayElement) return;
