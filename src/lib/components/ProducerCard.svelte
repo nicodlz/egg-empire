@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Producer } from '../entities/Producer';
+	import type { Producer } from '../entities/Producer.svelte';
 	import { formatNumber, formatRate } from '../engine/formulas';
 	import { buyProducer } from '../state/actions';
 	import { getAffordableProducers } from '../state/derived.svelte';

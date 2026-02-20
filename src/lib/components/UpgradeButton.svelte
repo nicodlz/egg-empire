@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Upgrade } from '../entities/Upgrade';
+	import type { Upgrade } from '../entities/Upgrade.svelte';
 	import { formatNumber } from '../engine/formulas';
 	import { buyUpgrade } from '../state/actions';
 	import { getAffordableUpgrades } from '../state/derived.svelte';

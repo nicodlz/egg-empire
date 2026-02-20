@@ -1,7 +1,8 @@
 import Decimal from 'break_eternity.js';
-import { Resource } from '../entities/Resource';
-import { Producer } from '../entities/Producer';
-import { Upgrade } from '../entities/Upgrade';
+import { SvelteMap } from 'svelte/reactivity';
+import { Resource } from '../entities/Resource.svelte';
+import { Producer } from '../entities/Producer.svelte';
+import { Upgrade } from '../entities/Upgrade.svelte';
 import { RESOURCES, PRODUCERS, UPGRADES, PHASES } from '../engine/constants';
 import type { GameState, GamePhase, GameStatistics } from '../engine/types';
 
@@ -11,13 +12,13 @@ import type { GameState, GamePhase, GameStatistics } from '../engine/types';
  */
 function createGameState() {
 	// Initialize resources
-	const resources = new Map<string, Resource>();
+	const resources = new SvelteMap<string, Resource>();
 	Object.values(RESOURCES).forEach(def => {
 		resources.set(def.id, new Resource(def.id, def.name, def.displayOrder));
 	});
 
 	// Initialize producers
-	const producers = new Map<string, Producer>();
+	const producers = new SvelteMap<string, Producer>();
 	Object.values(PRODUCERS).forEach(def => {
 		const producer = new Producer(
 			def.id,
@@ -33,11 +34,11 @@ function createGameState() {
 	});
 
 	// Initialize upgrades (effects will be bound in actions.ts)
-	const upgrades = new Map<string, Upgrade>();
+	const upgrades = new SvelteMap<string, Upgrade>();
 	// We'll initialize these properly when we create the actions
 
 	// Initialize phases
-	const phases = new Map<string, GamePhase>();
+	const phases = new SvelteMap<string, GamePhase>();
 	Object.values(PHASES).forEach(def => {
 		phases.set(def.id, {
 			id: def.id,

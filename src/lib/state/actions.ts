@@ -1,6 +1,6 @@
 import Decimal from 'break_eternity.js';
 import { gameState } from './gameState.svelte';
-import { Upgrade } from '../entities/Upgrade';
+import { Upgrade } from '../entities/Upgrade.svelte';
 import { UPGRADES } from '../engine/constants';
 
 /**
