@@ -120,27 +120,25 @@ export function getCurrentPhase() {
 }
 
 /**
- * Get all unlocked producers in current phase
+ * Get ALL unlocked producers across all phases
  */
 export function getCurrentPhaseProducers() {
-	const phase = getCurrentPhase();
-	if (!phase) return [];
-
-	return phase.producers
-		.map(id => gameState.producers.get(id))
-		.filter(p => p && p.unlocked);
+	const result: any[] = [];
+	gameState.producers.forEach(p => {
+		if (p && p.unlocked) result.push(p);
+	});
+	return result;
 }
 
 /**
- * Get all available upgrades in current phase
+ * Get ALL available (unlocked + not purchased) upgrades across all phases
  */
 export function getCurrentPhaseUpgrades() {
-	const phase = getCurrentPhase();
-	if (!phase) return [];
-
-	return phase.upgrades
-		.map(id => gameState.upgrades.get(id))
-		.filter(u => u && u.unlocked && !u.purchased);
+	const result: any[] = [];
+	gameState.upgrades.forEach(u => {
+		if (u && u.unlocked && !u.purchased) result.push(u);
+	});
+	return result;
 }
 
 /**

@@ -10,35 +10,48 @@
 	import ProducerCard from '$lib/components/ProducerCard.svelte';
 	import UpgradeButton from '$lib/components/UpgradeButton.svelte';
 	import ProgressBar from '$lib/components/ProgressBar.svelte';
-	import PhaseTransition from '$lib/components/PhaseTransition.svelte';
+	// PhaseTransition removed — using subtle toast instead
 	import StatsPanel from '$lib/components/StatsPanel.svelte';
+	import AchievementToast from '$lib/components/AchievementToast.svelte';
+	import AchievementPanel from '$lib/components/AchievementPanel.svelte';
+	import { achievementManager, setAchievementCallback } from '$lib/achievements/achievementManager';
+	import type { Achievement } from '$lib/achievements/achievements';
 
 	let engine: GameEngine;
-	let showPhaseTransition = $state(false);
-	let transitionPhaseName = $state('');
 	let lastPhaseCheck = $state<string | null>(null);
+	
+	// Achievement system
+	let showAchievementPanel = $state(false);
+	let achievementQueue = $state<Achievement[]>([]);
 
 	const producers = $derived(getCurrentPhaseProducers());
 	const upgrades = $derived(getCurrentPhaseUpgrades());
 
-	// Watch for phase unlocks
+	// Watch for phase unlocks — subtle notification instead of fullscreen
+	let phaseToast = $state('');
+	let phaseToastVisible = $state(false);
+
 	$effect(() => {
 		const phaseToUnlock = getShouldUnlockPhase();
 		if (phaseToUnlock && phaseToUnlock !== lastPhaseCheck) {
 			const phase = gameState.phases.get(phaseToUnlock);
 			if (phase) {
-				transitionPhaseName = phase.name;
-				showPhaseTransition = true;
 				lastPhaseCheck = phaseToUnlock;
+				phaseToast = `🎉 ${phase.name} unlocked!`;
+				phaseToastVisible = true;
+				setTimeout(() => { phaseToastVisible = false; }, 3000);
 			}
 		}
 	});
 
-	function handlePhaseTransitionComplete() {
-		showPhaseTransition = false;
-	}
-
 	onMount(() => {
+		// Set up achievement callback
+		setAchievementCallback((newAchievements) => {
+			if (newAchievements.length > 0) {
+				achievementQueue = [...achievementQueue, ...newAchievements];
+			}
+		});
+
 		// Initialize upgrades with their effects
 		initializeUpgrades();
 
@@ -72,13 +85,27 @@
 </script>
 
 <div class="game-container game-ui">
+	<!-- Achievement toast -->
+	<AchievementToast achievements={achievementQueue} />
+
+	<!-- Achievement panel -->
+	<AchievementPanel 
+		manager={achievementManager}
+		isOpen={showAchievementPanel}
+		onClose={() => showAchievementPanel = false}
+	/>
+
 	<!-- Phase transition overlay -->
-	{#if showPhaseTransition}
-		<PhaseTransition 
-			phaseName={transitionPhaseName}
-			onComplete={handlePhaseTransitionComplete}
-		/>
+	{#if phaseToastVisible}
+		<div class="fixed top-12 left-1/2 -translate-x-1/2 z-50 rounded-xl bg-white/90 px-5 py-2.5 text-sm font-bold text-gray-900 shadow-lg backdrop-blur-sm transition-all">
+			{phaseToast}
+		</div>
 	{/if}
+
+	<!-- Achievement button -->
+	<button class="achievement-btn" onclick={() => showAchievementPanel = true}>
+		🏆
+	</button>
 
 	<!-- Top: compact resource bar -->
 	<ResourceBar />
@@ -111,6 +138,39 @@
 		flex-direction: column;
 		background: linear-gradient(180deg, #FFF8E7 0%, #F5E6D3 100%);
 		overflow: hidden;
+		position: relative;
+	}
+
+	.achievement-btn {
+		position: fixed;
+		top: 20px;
+		right: 20px;
+		width: 56px;
+		height: 56px;
+		border-radius: 50%;
+		background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+		border: 3px solid #f4a460;
+		font-size: 32px;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		box-shadow: 
+			0 4px 12px rgba(0, 0, 0, 0.3),
+			0 0 20px rgba(255, 215, 0, 0.3);
+		transition: all 0.2s;
+		z-index: 100;
+	}
+
+	.achievement-btn:hover {
+		transform: scale(1.1) rotate(5deg);
+		box-shadow: 
+			0 6px 16px rgba(0, 0, 0, 0.4),
+			0 0 30px rgba(255, 215, 0, 0.5);
+	}
+
+	.achievement-btn:active {
+		transform: scale(0.95);
 	}
 
 	.scroll-area {

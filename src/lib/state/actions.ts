@@ -2,6 +2,7 @@ import Decimal from 'break_eternity.js';
 import { gameState } from './gameState.svelte';
 import { Upgrade } from '../entities/Upgrade.svelte';
 import { UPGRADES } from '../engine/constants';
+import { achievementManager, triggerAchievementCallback } from '../achievements/achievementManager';
 
 /**
  * Initialize upgrades with their effects
@@ -96,6 +97,279 @@ export function initializeUpgrades() {
 	);
 	premiumFeed.unlock();
 	gameState.upgrades.set(premiumFeed.id, premiumFeed);
+
+	// INDUSTRIAL PHASE UPGRADES
+	// Industrial Automation - 2x incubator production
+	const industrialAutomation = new Upgrade(
+		UPGRADES.INDUSTRIAL_AUTOMATION.id,
+		UPGRADES.INDUSTRIAL_AUTOMATION.name,
+		UPGRADES.INDUSTRIAL_AUTOMATION.description,
+		UPGRADES.INDUSTRIAL_AUTOMATION.cost,
+		UPGRADES.INDUSTRIAL_AUTOMATION.resourceCost,
+		() => {
+			const incubator = gameState.producers.get('incubator');
+			if (incubator) {
+				incubator.applyMultiplier(new Decimal(2));
+			}
+		},
+		() => {
+			const incubator = gameState.producers.get('incubator');
+			return incubator ? incubator.owned > 0 : false;
+		}
+	);
+	gameState.upgrades.set(industrialAutomation.id, industrialAutomation);
+
+	// Quality Control - 2x factory production
+	const qualityControl = new Upgrade(
+		UPGRADES.QUALITY_CONTROL.id,
+		UPGRADES.QUALITY_CONTROL.name,
+		UPGRADES.QUALITY_CONTROL.description,
+		UPGRADES.QUALITY_CONTROL.cost,
+		UPGRADES.QUALITY_CONTROL.resourceCost,
+		() => {
+			const factory = gameState.producers.get('factory');
+			if (factory) {
+				factory.applyMultiplier(new Decimal(2));
+			}
+		},
+		() => {
+			const factory = gameState.producers.get('factory');
+			return factory ? factory.owned > 0 : false;
+		}
+	);
+	gameState.upgrades.set(qualityControl.id, qualityControl);
+
+	// Efficient Clicks - 3x click power
+	const efficientClicks = new Upgrade(
+		UPGRADES.EFFICIENT_CLICKS.id,
+		UPGRADES.EFFICIENT_CLICKS.name,
+		UPGRADES.EFFICIENT_CLICKS.description,
+		UPGRADES.EFFICIENT_CLICKS.cost,
+		UPGRADES.EFFICIENT_CLICKS.resourceCost,
+		() => {
+			gameState.clickPower = gameState.clickPower.times(3);
+		}
+	);
+	gameState.upgrades.set(efficientClicks.id, efficientClicks);
+
+	// Mass Production - 1.5x all production
+	const massProduction = new Upgrade(
+		UPGRADES.MASS_PRODUCTION.id,
+		UPGRADES.MASS_PRODUCTION.name,
+		UPGRADES.MASS_PRODUCTION.description,
+		UPGRADES.MASS_PRODUCTION.cost,
+		UPGRADES.MASS_PRODUCTION.resourceCost,
+		() => {
+			gameState.producers.forEach(producer => {
+				if (producer.unlocked) {
+					producer.applyMultiplier(new Decimal(1.5));
+				}
+			});
+		}
+	);
+	gameState.upgrades.set(massProduction.id, massProduction);
+
+	// Robotics - 3x conveyor belt production
+	const robotics = new Upgrade(
+		UPGRADES.ROBOTICS.id,
+		UPGRADES.ROBOTICS.name,
+		UPGRADES.ROBOTICS.description,
+		UPGRADES.ROBOTICS.cost,
+		UPGRADES.ROBOTICS.resourceCost,
+		() => {
+			const conveyorBelt = gameState.producers.get('conveyor_belt');
+			if (conveyorBelt) {
+				conveyorBelt.applyMultiplier(new Decimal(3));
+			}
+		},
+		() => {
+			const conveyorBelt = gameState.producers.get('conveyor_belt');
+			return conveyorBelt ? conveyorBelt.owned > 0 : false;
+		}
+	);
+	gameState.upgrades.set(robotics.id, robotics);
+
+	// BIOTECH PHASE UPGRADES
+	// Genetic Enhancement - 2x DNA sequencer production
+	const geneticEnhancement = new Upgrade(
+		UPGRADES.GENETIC_ENHANCEMENT.id,
+		UPGRADES.GENETIC_ENHANCEMENT.name,
+		UPGRADES.GENETIC_ENHANCEMENT.description,
+		UPGRADES.GENETIC_ENHANCEMENT.cost,
+		UPGRADES.GENETIC_ENHANCEMENT.resourceCost,
+		() => {
+			const dnaSequencer = gameState.producers.get('dna_sequencer');
+			if (dnaSequencer) {
+				dnaSequencer.applyMultiplier(new Decimal(2));
+			}
+		},
+		() => {
+			const dnaSequencer = gameState.producers.get('dna_sequencer');
+			return dnaSequencer ? dnaSequencer.owned > 0 : false;
+		}
+	);
+	gameState.upgrades.set(geneticEnhancement.id, geneticEnhancement);
+
+	// CRISPR Tech - 2x gene lab production
+	const crisprTech = new Upgrade(
+		UPGRADES.CRISPR_TECH.id,
+		UPGRADES.CRISPR_TECH.name,
+		UPGRADES.CRISPR_TECH.description,
+		UPGRADES.CRISPR_TECH.cost,
+		UPGRADES.CRISPR_TECH.resourceCost,
+		() => {
+			const geneLab = gameState.producers.get('gene_lab');
+			if (geneLab) {
+				geneLab.applyMultiplier(new Decimal(2));
+			}
+		},
+		() => {
+			const geneLab = gameState.producers.get('gene_lab');
+			return geneLab ? geneLab.owned > 0 : false;
+		}
+	);
+	gameState.upgrades.set(crisprTech.id, crisprTech);
+
+	// Synthetic Biology - 1.5x all production
+	const syntheticBiology = new Upgrade(
+		UPGRADES.SYNTHETIC_BIOLOGY.id,
+		UPGRADES.SYNTHETIC_BIOLOGY.name,
+		UPGRADES.SYNTHETIC_BIOLOGY.description,
+		UPGRADES.SYNTHETIC_BIOLOGY.cost,
+		UPGRADES.SYNTHETIC_BIOLOGY.resourceCost,
+		() => {
+			gameState.producers.forEach(producer => {
+				if (producer.unlocked) {
+					producer.applyMultiplier(new Decimal(1.5));
+				}
+			});
+		}
+	);
+	gameState.upgrades.set(syntheticBiology.id, syntheticBiology);
+
+	// Quantum DNA - 3x bioprinter production
+	const quantumDna = new Upgrade(
+		UPGRADES.QUANTUM_DNA.id,
+		UPGRADES.QUANTUM_DNA.name,
+		UPGRADES.QUANTUM_DNA.description,
+		UPGRADES.QUANTUM_DNA.cost,
+		UPGRADES.QUANTUM_DNA.resourceCost,
+		() => {
+			const bioprinter = gameState.producers.get('bioprinter');
+			if (bioprinter) {
+				bioprinter.applyMultiplier(new Decimal(3));
+			}
+		},
+		() => {
+			const bioprinter = gameState.producers.get('bioprinter');
+			return bioprinter ? bioprinter.owned > 0 : false;
+		}
+	);
+	gameState.upgrades.set(quantumDna.id, quantumDna);
+
+	// Super Clicks - 5x click power
+	const superClicks = new Upgrade(
+		UPGRADES.SUPER_CLICKS.id,
+		UPGRADES.SUPER_CLICKS.name,
+		UPGRADES.SUPER_CLICKS.description,
+		UPGRADES.SUPER_CLICKS.cost,
+		UPGRADES.SUPER_CLICKS.resourceCost,
+		() => {
+			gameState.clickPower = gameState.clickPower.times(5);
+		}
+	);
+	gameState.upgrades.set(superClicks.id, superClicks);
+
+	// COSMIC PHASE UPGRADES
+	// Zero-G Optimization - 2x space station production
+	const zeroGOptimization = new Upgrade(
+		UPGRADES.ZERO_G_OPTIMIZATION.id,
+		UPGRADES.ZERO_G_OPTIMIZATION.name,
+		UPGRADES.ZERO_G_OPTIMIZATION.description,
+		UPGRADES.ZERO_G_OPTIMIZATION.cost,
+		UPGRADES.ZERO_G_OPTIMIZATION.resourceCost,
+		() => {
+			const spaceStation = gameState.producers.get('space_station');
+			if (spaceStation) {
+				spaceStation.applyMultiplier(new Decimal(2));
+			}
+		},
+		() => {
+			const spaceStation = gameState.producers.get('space_station');
+			return spaceStation ? spaceStation.owned > 0 : false;
+		}
+	);
+	gameState.upgrades.set(zeroGOptimization.id, zeroGOptimization);
+
+	// Lunar Efficiency - 2x moon colony production
+	const lunarEfficiency = new Upgrade(
+		UPGRADES.LUNAR_EFFICIENCY.id,
+		UPGRADES.LUNAR_EFFICIENCY.name,
+		UPGRADES.LUNAR_EFFICIENCY.description,
+		UPGRADES.LUNAR_EFFICIENCY.cost,
+		UPGRADES.LUNAR_EFFICIENCY.resourceCost,
+		() => {
+			const moonColony = gameState.producers.get('moon_colony');
+			if (moonColony) {
+				moonColony.applyMultiplier(new Decimal(2));
+			}
+		},
+		() => {
+			const moonColony = gameState.producers.get('moon_colony');
+			return moonColony ? moonColony.owned > 0 : false;
+		}
+	);
+	gameState.upgrades.set(lunarEfficiency.id, lunarEfficiency);
+
+	// Stellar Power - 3x dyson sphere production
+	const stellarPower = new Upgrade(
+		UPGRADES.STELLAR_POWER.id,
+		UPGRADES.STELLAR_POWER.name,
+		UPGRADES.STELLAR_POWER.description,
+		UPGRADES.STELLAR_POWER.cost,
+		UPGRADES.STELLAR_POWER.resourceCost,
+		() => {
+			const dysonSphere = gameState.producers.get('dyson_sphere');
+			if (dysonSphere) {
+				dysonSphere.applyMultiplier(new Decimal(3));
+			}
+		},
+		() => {
+			const dysonSphere = gameState.producers.get('dyson_sphere');
+			return dysonSphere ? dysonSphere.owned > 0 : false;
+		}
+	);
+	gameState.upgrades.set(stellarPower.id, stellarPower);
+
+	// Interdimensional Boost - 1.5x all production
+	const interdimensionalBoost = new Upgrade(
+		UPGRADES.INTERDIMENSIONAL_BOOST.id,
+		UPGRADES.INTERDIMENSIONAL_BOOST.name,
+		UPGRADES.INTERDIMENSIONAL_BOOST.description,
+		UPGRADES.INTERDIMENSIONAL_BOOST.cost,
+		UPGRADES.INTERDIMENSIONAL_BOOST.resourceCost,
+		() => {
+			gameState.producers.forEach(producer => {
+				if (producer.unlocked) {
+					producer.applyMultiplier(new Decimal(1.5));
+				}
+			});
+		}
+	);
+	gameState.upgrades.set(interdimensionalBoost.id, interdimensionalBoost);
+
+	// Cosmic Clicks - 10x click power
+	const cosmicClicks = new Upgrade(
+		UPGRADES.COSMIC_CLICKS.id,
+		UPGRADES.COSMIC_CLICKS.name,
+		UPGRADES.COSMIC_CLICKS.description,
+		UPGRADES.COSMIC_CLICKS.cost,
+		UPGRADES.COSMIC_CLICKS.resourceCost,
+		() => {
+			gameState.clickPower = gameState.clickPower.times(10);
+		}
+	);
+	gameState.upgrades.set(cosmicClicks.id, cosmicClicks);
 }
 
 /**
@@ -174,6 +448,10 @@ export function updateGame(deltaTime: number) {
 
 	// Check for phase unlocks
 	checkPhaseUnlocks();
+
+	// Check for achievements
+	const newAchievements = achievementManager.check(gameState);
+	triggerAchievementCallback(newAchievements);
 }
 
 /**

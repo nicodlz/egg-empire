@@ -6,16 +6,22 @@
 	import { clickEgg } from '../state/actions';
 	import { playTap } from '../audio/tap';
 	import confetti from 'canvas-confetti';
+	import FloatingText from './FloatingText.svelte';
 
 	let eggElement: HTMLDivElement;
 	let emojiElement: HTMLDivElement;
 	let counterElement: HTMLDivElement;
+	let floatingText: FloatingText;
 
 	const eggs = $derived(gameState.resources.get('eggs'));
 
 	function handleClick(event: MouseEvent | TouchEvent) {
 		clickEgg();
 		playTap();
+
+		// Spawn floating text with current click power
+		const clickPowerValue = gameState.clickPower.toNumber();
+		floatingText?.spawn(`+${formatNumber(clickPowerValue)}`);
 
 		// Get click position for confetti
 		const rect = eggElement.getBoundingClientRect();
@@ -81,7 +87,8 @@
 	}
 </script>
 
-<div class="flex flex-col items-center justify-center pb-4 pt-2" bind:this={eggElement}>
+<div class="relative flex flex-col items-center justify-center pb-4 pt-2" bind:this={eggElement}>
+	<FloatingText bind:this={floatingText} />
 	<button 
 		class="flex flex-col items-center justify-center bg-transparent border-none outline-none cursor-pointer"
 		onclick={handleClick}
