@@ -12,6 +12,9 @@
 	import UpgradeButton from '$lib/components/UpgradeButton.svelte';
 	import SellPanel from '$lib/components/SellPanel.svelte';
 	import ChickenCoop from '$lib/components/ChickenCoop.svelte';
+	import FactoryScene from '$lib/components/FactoryScene.svelte';
+	import BiotechLab from '$lib/components/BiotechLab.svelte';
+	import CosmicScene from '$lib/components/CosmicScene.svelte';
 	import HatchAnimation from '$lib/components/HatchAnimation.svelte';
 	import StatsPanel from '$lib/components/StatsPanel.svelte';
 	import { hatchEgg, buyAutoHatch, getAutoHatchCost } from '$lib/state/actions';
@@ -32,6 +35,13 @@
 	const producers = $derived(getCurrentPhaseProducers().filter((p: any) => p.id !== 'chicken'));
 	const upgrades = $derived(getCurrentPhaseUpgrades());
 	const chickenCount = $derived(gameState.producers.get('chicken')?.owned ?? 0);
+	const eggsPerSec = $derived(getTotalEggsPerSecond().toNumber());
+	const highestPhase = $derived(() => {
+		if (gameState.phases.get('cosmic')?.unlocked) return 'cosmic';
+		if (gameState.phases.get('biotech')?.unlocked) return 'biotech';
+		if (gameState.phases.get('industrial')?.unlocked) return 'industrial';
+		return 'artisanal';
+	});
 	
 	let hatchCooldown = $state(false);
 	let hatchAnim: HatchAnimation;
@@ -138,7 +148,14 @@
 
 	<!-- Middle: scrollable content -->
 	<div class="scroll-area">
-		<!-- Chicken coop -->
+		<!-- Phase scene -->
+		{#if highestPhase() === 'cosmic'}
+			<CosmicScene productionRate={eggsPerSec} />
+		{:else if highestPhase() === 'biotech'}
+			<BiotechLab productionRate={eggsPerSec} />
+		{:else if highestPhase() === 'industrial'}
+			<FactoryScene productionRate={eggsPerSec} />
+		{/if}
 		<ChickenCoop chickenCount={chickenCount} />
 
 		<!-- Hatch + Auto-hatch row -->
