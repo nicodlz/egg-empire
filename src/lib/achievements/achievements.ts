@@ -20,9 +20,9 @@ export const ACHIEVEMENTS: Achievement[] = [
 		id: 'first_tap',
 		name: 'First Tap',
 		emoji: '👆',
-		description: 'Click the egg once',
+		description: 'Click the egg 10 times',
 		reward: '+1 Click Power',
-		condition: (state) => state.totalClicks >= 1,
+		condition: (state) => state.totalClicks >= 10,
 		rewardEffect: (state) => {
 			state.clickPower = state.clickPower.plus(1);
 		}
