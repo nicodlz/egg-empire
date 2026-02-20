@@ -327,6 +327,7 @@ function resizeCanvas() {
 
 	const dpr = window.devicePixelRatio || 1;
 	const rect = parent.getBoundingClientRect();
+	if (rect.width === 0) return; // not laid out yet
 
 	canvas.width = rect.width * dpr;
 	canvas.height = 180 * dpr;
@@ -340,9 +341,12 @@ function resizeCanvas() {
 }
 
 onMount(() => {
-	resizeCanvas();
+	// Wait a tick for layout to settle in conditional blocks
+	requestAnimationFrame(() => {
+		resizeCanvas();
+		animate();
+	});
 	window.addEventListener('resize', resizeCanvas);
-	animate();
 });
 
 onDestroy(() => {

@@ -309,12 +309,15 @@
 
 		// Handle resize
 		function resize() {
-			canvas.width = canvas.offsetWidth;
+			if (canvas.offsetWidth > 0) canvas.width = canvas.offsetWidth;
 		}
 
-		resize();
+		// Wait a tick for layout in conditional blocks
+		requestAnimationFrame(() => {
+			resize();
+			animate();
+		});
 		window.addEventListener('resize', resize);
-		animate();
 
 		return () => {
 			window.removeEventListener('resize', resize);

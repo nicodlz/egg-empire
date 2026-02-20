@@ -379,7 +379,7 @@ function animate() {
 function handleResize() {
 	if (!canvas) return;
 	const rect = canvas.parentElement?.getBoundingClientRect();
-	if (rect) {
+	if (rect && rect.width > 0) {
 		canvas.width = rect.width;
 		canvas.height = 180;
 		initScene(canvas.width, canvas.height);
@@ -388,9 +388,10 @@ function handleResize() {
 
 onMount(() => {
 	ctx = canvas.getContext('2d')!;
-	handleResize();
-	animate();
-
+	requestAnimationFrame(() => {
+		handleResize();
+		animate();
+	});
 	window.addEventListener('resize', handleResize);
 });
 
