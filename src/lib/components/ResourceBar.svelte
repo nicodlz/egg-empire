@@ -7,7 +7,7 @@
 	const eggsPerSecond = $derived(getTotalEggsPerSecond());
 </script>
 
-<div class="flex-shrink-0 border-b border-amber-200/60 bg-egg-cream/95 px-3 py-2">
+<div class="flex-shrink-0 bg-egg-cream/95 px-3 py-2">
 	<div class="flex items-center justify-center gap-4">
 		<div class="flex items-center gap-1.5">
 			<span class="text-lg">🥚</span>

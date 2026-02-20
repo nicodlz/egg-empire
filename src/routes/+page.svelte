@@ -85,27 +85,14 @@
 
 	<!-- Middle: scrollable content -->
 	<div class="scroll-area">
-		<!-- Producers -->
-		<section class="section">
-			<h2 class="section-title">Producers</h2>
-			<div class="producers-grid">
-				{#each producers as producer (producer.id)}
-					<ProducerCard {producer} />
-				{/each}
-			</div>
-		</section>
-
-		<!-- Upgrades -->
-		{#if upgrades.length > 0}
-			<section class="section">
-				<h2 class="section-title">Upgrades</h2>
-				<div class="upgrades-grid">
-					{#each upgrades as upgrade (upgrade.id)}
-						<UpgradeButton {upgrade} />
-					{/each}
-				</div>
-			</section>
-		{/if}
+		<div class="item-list">
+			{#each producers as producer (producer.id)}
+				<ProducerCard {producer} />
+			{/each}
+			{#each upgrades as upgrade (upgrade.id)}
+				<UpgradeButton {upgrade} />
+			{/each}
+		</div>
 	</div>
 
 	<!-- Bottom: egg clicker (fixed) -->
@@ -139,59 +126,25 @@
 	.egg-dock {
 		flex-shrink: 0;
 		padding: 0.5rem 0;
-		background: linear-gradient(0deg, rgba(245, 230, 211, 1) 0%, rgba(245, 230, 211, 0) 100%);
 	}
 
-	.section {
-		background: rgba(255, 255, 255, 0.5);
-		padding: 1rem;
-		border-radius: 16px;
-		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-	}
-
-	.section-title {
-		font-size: 1.25rem;
-		font-weight: bold;
-		color: #333;
-		margin-bottom: 0.75rem;
-		text-align: center;
-	}
-
-	.producers-grid {
-		display: grid;
-		grid-template-columns: 1fr;
-		gap: 0.75rem;
-	}
-
-	.upgrades-grid {
-		display: grid;
-		grid-template-columns: 1fr;
+	.item-list {
+		display: flex;
+		flex-direction: column;
 		gap: 0.5rem;
 	}
 
-	/* Desktop: side-by-side layout */
+	/* Desktop */
 	@media (min-width: 1024px) {
-		.game-container {
-			height: 100vh;
-		}
-
 		.scroll-area {
 			padding: 1.5rem;
-			max-width: 900px;
+			max-width: 500px;
 			margin: 0 auto;
 			width: 100%;
 		}
 
 		.egg-dock {
 			padding: 1rem 0;
-		}
-
-		.producers-grid {
-			grid-template-columns: repeat(2, 1fr);
-		}
-
-		.upgrades-grid {
-			grid-template-columns: repeat(2, 1fr);
 		}
 	}
 </style>
