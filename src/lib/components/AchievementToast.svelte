@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import gsap from 'gsap';
 	import type { Achievement } from '$lib/achievements/achievements';
 
 	interface Props {
@@ -8,124 +6,93 @@
 		onClear: () => void;
 	}
 
-	let { achievements = [], onClear }: Props = $props();
+	let { achievements, onClear }: Props = $props();
 
-	let currentIndex = $state(0);
-	let currentAchievement = $derived(achievements[currentIndex]);
-	let toastElement: HTMLDivElement;
-	let isAnimating = $state(false);
+	let visible = $state(false);
+	let current = $state<Achievement | null>(null);
+	let processing = false;
+	let queue: Achievement[] = [];
 
-	// Show next achievement in queue
-	function showNext() {
-		if (!currentAchievement || isAnimating) return;
-
-		isAnimating = true;
-
-		gsap.fromTo(
-			toastElement,
-			{ y: -100, opacity: 0 },
-			{
-				y: 0,
-				opacity: 1,
-				duration: 0.5,
-				ease: 'back.out(1.7)',
-				onComplete: () => {
-					gsap.to(toastElement, {
-						delay: 2,
-						y: -100,
-						opacity: 0,
-						duration: 0.3,
-						ease: 'power2.in',
-						onComplete: () => {
-							isAnimating = false;
-							if (currentIndex < achievements.length - 1) {
-								currentIndex++;
-								showNext();
-							} else {
-								// Done showing all — clear the queue
-								currentIndex = 0;
-								onClear();
-							}
-						}
-					});
-				}
-			}
-		);
-	}
-
-	// Watch for new achievements
+	// When new achievements arrive, add to internal queue and start processing
 	$effect(() => {
-		if (achievements.length > 0 && !isAnimating) {
-			currentIndex = 0;
-			showNext();
-		}
+		if (achievements.length === 0) return;
+		// Copy to internal queue, then immediately clear parent
+		queue.push(...achievements);
+		// Use queueMicrotask to avoid mutating parent state during effect
+		queueMicrotask(() => onClear());
+		if (!processing) processQueue();
 	});
+
+	function processQueue() {
+		if (queue.length === 0) {
+			processing = false;
+			return;
+		}
+		processing = true;
+		current = queue.shift()!;
+		visible = true;
+
+		// Auto-hide after 2.5s, then show next
+		setTimeout(() => {
+			visible = false;
+			setTimeout(() => processQueue(), 400);
+		}, 2500);
+	}
 </script>
 
-{#if currentAchievement}
-	<div 
-		bind:this={toastElement}
-		class="achievement-toast"
-		style="opacity: 0; transform: translateY(-100px);"
-	>
-		<div class="toast-content">
-			<span class="toast-emoji">{currentAchievement.emoji}</span>
-			<div class="toast-text">
-				<div class="toast-title">Achievement Unlocked!</div>
-				<div class="toast-name">{currentAchievement.name}</div>
-			</div>
+{#if current && visible}
+	<div class="toast" class:show={visible}>
+		<span class="emoji">{current.emoji}</span>
+		<div class="text">
+			<div class="label">Achievement Unlocked!</div>
+			<div class="name">{current.name}</div>
 		</div>
 	</div>
 {/if}
 
 <style>
-	.achievement-toast {
+	.toast {
 		position: fixed;
-		top: 20px;
+		top: 12px;
 		left: 50%;
-		transform: translateX(-50%);
+		transform: translateX(-50%) translateY(-120px);
 		z-index: 9999;
 		pointer-events: none;
-	}
-
-	.toast-content {
-		background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-		border: 3px solid #f4a460;
-		border-radius: 12px;
-		padding: 16px 24px;
 		display: flex;
 		align-items: center;
-		gap: 12px;
-		box-shadow: 
-			0 4px 12px rgba(0, 0, 0, 0.3),
-			0 0 20px rgba(255, 215, 0, 0.4),
-			inset 0 1px 0 rgba(255, 255, 255, 0.3);
-		min-width: 300px;
+		gap: 10px;
+		background: #fff8e1;
+		padding: 12px 20px;
+		border-radius: 14px;
+		opacity: 0;
+		transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+		max-width: calc(100vw - 32px);
 	}
-
-	.toast-emoji {
-		font-size: 48px;
+	.toast.show {
+		transform: translateX(-50%) translateY(0);
+		opacity: 1;
+	}
+	.emoji {
+		font-size: 32px;
 		line-height: 1;
-		filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 	}
-
-	.toast-text {
+	.text {
 		flex: 1;
+		min-width: 0;
 	}
-
-	.toast-title {
-		font-size: 12px;
-		font-weight: 600;
+	.label {
+		font-size: 10px;
+		font-weight: 700;
 		text-transform: uppercase;
-		color: #8b4513;
 		letter-spacing: 0.5px;
-		margin-bottom: 2px;
+		color: #a0855c;
 	}
-
-	.toast-name {
-		font-size: 18px;
-		font-weight: bold;
-		color: #654321;
-		text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+	.name {
+		font-size: 15px;
+		font-weight: 700;
+		color: #4a3728;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 </style>
