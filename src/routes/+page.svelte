@@ -122,7 +122,7 @@
 
 <div class="game-container game-ui">
 	<!-- Achievement toast -->
-	<AchievementToast achievements={achievementQueue} />
+	<AchievementToast achievements={achievementQueue} onClear={() => { achievementQueue = []; }} />
 
 	<!-- Achievement panel -->
 	<AchievementPanel 

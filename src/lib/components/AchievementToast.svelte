@@ -5,9 +5,10 @@
 
 	interface Props {
 		achievements: Achievement[];
+		onClear: () => void;
 	}
 
-	let { achievements = [] }: Props = $props();
+	let { achievements = [], onClear }: Props = $props();
 
 	let currentIndex = $state(0);
 	let currentAchievement = $derived(achievements[currentIndex]);
@@ -20,20 +21,15 @@
 
 		isAnimating = true;
 
-		// Slide in from top
 		gsap.fromTo(
 			toastElement,
-			{
-				y: -100,
-				opacity: 0
-			},
+			{ y: -100, opacity: 0 },
 			{
 				y: 0,
 				opacity: 1,
 				duration: 0.5,
 				ease: 'back.out(1.7)',
 				onComplete: () => {
-					// Stay visible for 2 seconds
 					gsap.to(toastElement, {
 						delay: 2,
 						y: -100,
@@ -42,13 +38,13 @@
 						ease: 'power2.in',
 						onComplete: () => {
 							isAnimating = false;
-							// Move to next achievement
 							if (currentIndex < achievements.length - 1) {
 								currentIndex++;
 								showNext();
 							} else {
-								// Reset queue
+								// Done showing all — clear the queue
 								currentIndex = 0;
+								onClear();
 							}
 						}
 					});
@@ -60,6 +56,7 @@
 	// Watch for new achievements
 	$effect(() => {
 		if (achievements.length > 0 && !isAnimating) {
+			currentIndex = 0;
 			showNext();
 		}
 	});
