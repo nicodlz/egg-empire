@@ -507,17 +507,22 @@ export function buyUpgrade(upgradeId: string) {
  * Update game state based on delta time (called every tick)
  */
 export function updateGame(deltaTime: number) {
-	// Add production for each resource
+	// Calculate chicken boost from all buildings
+	let chickenBoost = new Decimal(1);
 	gameState.producers.forEach(producer => {
-		if (!producer.unlocked) return;
-
-		const production = producer.getProduction().times(deltaTime);
-		const resource = gameState.resources.get(producer.resourceProduced);
-		
-		if (resource) {
-			resource.add(production);
-		}
+		if (!producer.unlocked || producer.resourceProduced !== 'chicken_boost') return;
+		if (producer.owned <= 0) return;
+		// Each owned building adds its production as a multiplier
+		chickenBoost = chickenBoost.plus(producer.getProduction());
 	});
+
+	// Only chickens produce eggs, multiplied by boost
+	const chicken = gameState.producers.get('chicken');
+	if (chicken && chicken.owned > 0) {
+		const baseEggs = chicken.getProduction().times(chickenBoost).times(deltaTime);
+		const eggs = gameState.resources.get('eggs');
+		if (eggs) eggs.add(baseEggs);
+	}
 
 	// Auto-hatch
 	if (gameState.autoHatchCount > 0) {

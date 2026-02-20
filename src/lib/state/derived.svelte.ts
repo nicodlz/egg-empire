@@ -11,15 +11,18 @@ import { PHASE_THRESHOLDS } from '../engine/constants';
  * Total eggs production per second
  */
 export function getTotalEggsPerSecond(): Decimal {
-	let total = new Decimal(0);
-	
+	// Calculate chicken boost from buildings
+	let boost = new Decimal(1);
 	gameState.producers.forEach(producer => {
-		if (producer.resourceProduced === 'eggs' && producer.unlocked) {
-			total = total.plus(producer.getProduction());
+		if (producer.resourceProduced === 'chicken_boost' && producer.unlocked && producer.owned > 0) {
+			boost = boost.plus(producer.getProduction());
 		}
 	});
-	
-	return total;
+
+	// Only chickens produce eggs, multiplied by boost
+	const chicken = gameState.producers.get('chicken');
+	if (!chicken || chicken.owned <= 0) return new Decimal(0);
+	return chicken.getProduction().times(boost);
 }
 
 /**

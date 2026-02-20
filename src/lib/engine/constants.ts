@@ -51,33 +51,33 @@ export const PRODUCERS = {
 		id: 'coop',
 		name: 'Coop',
 		emoji: '🏠',
-		description: 'House more chickens',
+		description: 'Each chicken +50% eggs',
 		baseCost: new Decimal(50),
-		baseProduction: new Decimal(0.2),
+		baseProduction: new Decimal(0.5),
 		growthRate: 1.15,
-		resourceProduced: 'eggs',
+		resourceProduced: 'chicken_boost',
 		resourceCost: 'money'
 	},
 	FARM: {
 		id: 'farm',
 		name: 'Farm',
 		emoji: '🌾',
-		description: 'Large scale egg production',
+		description: 'Each chicken +2× eggs',
 		baseCost: new Decimal(500),
-		baseProduction: new Decimal(1),
+		baseProduction: new Decimal(2),
 		growthRate: 1.15,
-		resourceProduced: 'eggs',
+		resourceProduced: 'chicken_boost',
 		resourceCost: 'money'
 	},
 	FEED_OPTIMIZER: {
 		id: 'feed_optimizer',
 		name: 'Feed Optimizer',
 		emoji: '🧪',
-		description: 'Better nutrition, more eggs',
+		description: 'Each chicken +5× eggs',
 		baseCost: new Decimal(2500),
 		baseProduction: new Decimal(5),
 		growthRate: 1.15,
-		resourceProduced: 'eggs',
+		resourceProduced: 'chicken_boost',
 		resourceCost: 'money'
 	},
 	// Industrial phase
@@ -89,7 +89,7 @@ export const PRODUCERS = {
 		baseCost: new Decimal(50000),
 		baseProduction: new Decimal(50),
 		growthRate: 1.15,
-		resourceProduced: 'eggs',
+		resourceProduced: 'chicken_boost',
 		resourceCost: 'money'
 	},
 	FACTORY: {
@@ -100,7 +100,7 @@ export const PRODUCERS = {
 		baseCost: new Decimal(500000),
 		baseProduction: new Decimal(500),
 		growthRate: 1.15,
-		resourceProduced: 'eggs',
+		resourceProduced: 'chicken_boost',
 		resourceCost: 'money'
 	},
 	CONVEYOR_BELT: {
@@ -111,7 +111,7 @@ export const PRODUCERS = {
 		baseCost: new Decimal(5000000),
 		baseProduction: new Decimal(5000),
 		growthRate: 1.14,
-		resourceProduced: 'eggs',
+		resourceProduced: 'chicken_boost',
 		resourceCost: 'money'
 	},
 	MEGA_FACILITY: {
@@ -122,7 +122,7 @@ export const PRODUCERS = {
 		baseCost: new Decimal(50000000),
 		baseProduction: new Decimal(50000),
 		growthRate: 1.13,
-		resourceProduced: 'eggs',
+		resourceProduced: 'chicken_boost',
 		resourceCost: 'money'
 	},
 	// Biotech phase
@@ -134,7 +134,7 @@ export const PRODUCERS = {
 		baseCost: new Decimal(500000000),
 		baseProduction: new Decimal(500000),
 		growthRate: 1.16,
-		resourceProduced: 'eggs',
+		resourceProduced: 'chicken_boost',
 		resourceCost: 'money'
 	},
 	GENE_LAB: {
@@ -145,7 +145,7 @@ export const PRODUCERS = {
 		baseCost: new Decimal(5000000000),
 		baseProduction: new Decimal(5000000),
 		growthRate: 1.15,
-		resourceProduced: 'eggs',
+		resourceProduced: 'chicken_boost',
 		resourceCost: 'money'
 	},
 	BIOPRINTER: {
@@ -156,7 +156,7 @@ export const PRODUCERS = {
 		baseCost: new Decimal(50000000000),
 		baseProduction: new Decimal(50000000),
 		growthRate: 1.14,
-		resourceProduced: 'eggs',
+		resourceProduced: 'chicken_boost',
 		resourceCost: 'money'
 	},
 	EVOLUTION_CHAMBER: {
@@ -167,7 +167,7 @@ export const PRODUCERS = {
 		baseCost: new Decimal(500000000000),
 		baseProduction: new Decimal(500000000),
 		growthRate: 1.17,
-		resourceProduced: 'eggs',
+		resourceProduced: 'chicken_boost',
 		resourceCost: 'money'
 	},
 	// Cosmic phase
@@ -179,7 +179,7 @@ export const PRODUCERS = {
 		baseCost: new Decimal(5000000000000),
 		baseProduction: new Decimal(5000000000),
 		growthRate: 1.18,
-		resourceProduced: 'eggs',
+		resourceProduced: 'chicken_boost',
 		resourceCost: 'money'
 	},
 	MOON_COLONY: {
@@ -190,7 +190,7 @@ export const PRODUCERS = {
 		baseCost: new Decimal(50000000000000),
 		baseProduction: new Decimal(50000000000),
 		growthRate: 1.16,
-		resourceProduced: 'eggs',
+		resourceProduced: 'chicken_boost',
 		resourceCost: 'money'
 	},
 	DYSON_SPHERE: {
@@ -201,7 +201,7 @@ export const PRODUCERS = {
 		baseCost: new Decimal(500000000000000),
 		baseProduction: new Decimal(500000000000),
 		growthRate: 1.15,
-		resourceProduced: 'eggs',
+		resourceProduced: 'chicken_boost',
 		resourceCost: 'money'
 	},
 	MULTIVERSE_NEXUS: {
@@ -212,7 +212,7 @@ export const PRODUCERS = {
 		baseCost: new Decimal(5000000000000000),
 		baseProduction: new Decimal(5000000000000),
 		growthRate: 1.12,
-		resourceProduced: 'eggs',
+		resourceProduced: 'chicken_boost',
 		resourceCost: 'money'
 	}
 };
