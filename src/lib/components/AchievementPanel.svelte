@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import gsap from 'gsap';
 	import type { AchievementManager } from '$lib/achievements/AchievementManager.svelte';
 
@@ -17,277 +16,63 @@
 	const allAchievements = manager.getAllAchievements();
 	const progress = $derived(manager.getProgress());
 
-	// Animate panel open/close
 	$effect(() => {
 		if (!panelElement || !overlayElement) return;
-
 		if (isOpen) {
-			// Show panel
-			gsap.to(overlayElement, {
-				opacity: 1,
-				duration: 0.2,
-				display: 'flex'
-			});
-			gsap.fromTo(
-				panelElement,
-				{ scale: 0.8, opacity: 0 },
-				{ scale: 1, opacity: 1, duration: 0.3, ease: 'back.out(1.7)' }
-			);
+			gsap.to(overlayElement, { opacity: 1, duration: 0.2, display: 'flex' });
+			gsap.fromTo(panelElement, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.25, ease: 'power2.out' });
 		} else {
-			// Hide panel
-			gsap.to(panelElement, {
-				scale: 0.8,
-				opacity: 0,
-				duration: 0.2
-			});
-			gsap.to(overlayElement, {
-				opacity: 0,
-				duration: 0.2,
-				onComplete: () => {
-					gsap.set(overlayElement, { display: 'none' });
-				}
-			});
+			gsap.to(panelElement, { y: 40, opacity: 0, duration: 0.15 });
+			gsap.to(overlayElement, { opacity: 0, duration: 0.15, onComplete: () => gsap.set(overlayElement, { display: 'none' }) });
 		}
 	});
 
 	function handleOverlayClick(e: MouseEvent) {
-		if (e.target === overlayElement) {
-			onClose();
-		}
+		if (e.target === overlayElement) onClose();
 	}
 </script>
 
 {#if isOpen}
+<div 
+	bind:this={overlayElement}
+	class="fixed inset-0 z-[1000] flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm"
+	onclick={handleOverlayClick}
+	style="opacity: 0; display: none;"
+>
 	<div 
-		bind:this={overlayElement}
-		class="achievement-overlay"
-		onclick={handleOverlayClick}
-		style="opacity: 0; display: none;"
+		bind:this={panelElement}
+		class="flex max-h-[85dvh] w-full max-w-md flex-col rounded-t-2xl sm:rounded-2xl bg-egg-cream"
+		style="opacity: 0;"
 	>
-		<div 
-			bind:this={panelElement}
-			class="achievement-panel"
-			style="opacity: 0; transform: scale(0.8);"
-		>
-			<div class="panel-header">
-				<h2>🏆 Achievements</h2>
-				<button class="close-btn" onclick={onClose}>✕</button>
-			</div>
+		<!-- Header -->
+		<div class="flex items-center justify-between px-4 py-3">
+			<span class="text-base font-bold text-gray-900">🏆 Achievements — {progress.unlocked}/{progress.total}</span>
+			<button class="text-lg text-gray-400" onclick={onClose} type="button">✕</button>
+		</div>
 
-			<div class="progress-section">
-				<div class="progress-text">
-					{progress.unlocked} / {progress.total} ({Math.floor(progress.percentage)}%)
-				</div>
-				<div class="progress-bar">
-					<div 
-						class="progress-fill" 
-						style="width: {progress.percentage}%"
-					></div>
-				</div>
-			</div>
+		<!-- Progress bar -->
+		<div class="mx-4 mb-3 h-2 rounded-full bg-gray-200 overflow-hidden">
+			<div class="h-full rounded-full bg-amber-400 transition-all" style="width: {progress.percentage}%"></div>
+		</div>
 
-			<div class="achievements-grid">
+		<!-- List -->
+		<div class="flex-1 overflow-y-auto px-4 pb-4">
+			<div class="flex flex-col gap-2">
 				{#each allAchievements as achievement}
-					{@const isUnlocked = manager.isUnlocked(achievement.id)}
-					<div class="achievement-card" class:locked={!isUnlocked}>
-						<div class="achievement-emoji">
-							{isUnlocked ? achievement.emoji : '🔒'}
+					{@const unlocked = manager.isUnlocked(achievement.id)}
+					<div class="flex items-center gap-3 rounded-xl px-3 py-2.5 {unlocked ? 'bg-white/80' : 'bg-white/30 opacity-50'}">
+						<span class="text-2xl">{unlocked ? achievement.emoji : '🔒'}</span>
+						<div class="flex flex-1 flex-col min-w-0">
+							<span class="text-sm font-semibold text-gray-900 truncate">{unlocked ? achievement.name : '???'}</span>
+							<span class="text-xs text-gray-500">{unlocked ? achievement.description : 'Locked'}</span>
 						</div>
-						<div class="achievement-info">
-							<div class="achievement-name">
-								{isUnlocked ? achievement.name : '???'}
-							</div>
-							<div class="achievement-description">
-								{isUnlocked ? achievement.description : 'Locked'}
-							</div>
-							{#if isUnlocked}
-								<div class="achievement-reward">
-									✨ {achievement.reward}
-								</div>
-							{/if}
-						</div>
+						{#if unlocked}
+							<span class="text-xs text-green-600 font-medium whitespace-nowrap">✨ {achievement.reward}</span>
+						{/if}
 					</div>
 				{/each}
 			</div>
 		</div>
 	</div>
+</div>
 {/if}
-
-<style>
-	.achievement-overlay {
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background: rgba(0, 0, 0, 0.7);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		z-index: 10000;
-		padding: 20px;
-	}
-
-	.achievement-panel {
-		background: linear-gradient(135deg, #2c1810 0%, #3d2817 100%);
-		border: 4px solid #8b6914;
-		border-radius: 16px;
-		max-width: 800px;
-		width: 100%;
-		max-height: 90vh;
-		display: flex;
-		flex-direction: column;
-		box-shadow: 
-			0 8px 32px rgba(0, 0, 0, 0.5),
-			inset 0 1px 0 rgba(255, 255, 255, 0.1);
-	}
-
-	.panel-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: 24px;
-		border-bottom: 2px solid #8b6914;
-	}
-
-	.panel-header h2 {
-		margin: 0;
-		color: #ffd700;
-		font-size: 28px;
-		text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-	}
-
-	.close-btn {
-		background: transparent;
-		border: none;
-		color: #ffd700;
-		font-size: 32px;
-		cursor: pointer;
-		line-height: 1;
-		padding: 0;
-		width: 40px;
-		height: 40px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		border-radius: 8px;
-		transition: all 0.2s;
-	}
-
-	.close-btn:hover {
-		background: rgba(255, 215, 0, 0.1);
-		transform: scale(1.1);
-	}
-
-	.progress-section {
-		padding: 16px 24px;
-		background: rgba(0, 0, 0, 0.2);
-		border-bottom: 2px solid #8b6914;
-	}
-
-	.progress-text {
-		color: #ffd700;
-		font-size: 16px;
-		font-weight: bold;
-		margin-bottom: 8px;
-		text-align: center;
-	}
-
-	.progress-bar {
-		height: 24px;
-		background: rgba(0, 0, 0, 0.3);
-		border-radius: 12px;
-		overflow: hidden;
-		border: 2px solid #8b6914;
-	}
-
-	.progress-fill {
-		height: 100%;
-		background: linear-gradient(90deg, #ffd700 0%, #ffed4e 100%);
-		transition: width 0.5s ease;
-		box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-	}
-
-	.achievements-grid {
-		padding: 24px;
-		overflow-y: auto;
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-		gap: 16px;
-	}
-
-	.achievement-card {
-		background: linear-gradient(135deg, #3d2817 0%, #4a3318 100%);
-		border: 2px solid #8b6914;
-		border-radius: 12px;
-		padding: 16px;
-		display: flex;
-		gap: 12px;
-		transition: all 0.2s;
-	}
-
-	.achievement-card:not(.locked):hover {
-		transform: translateY(-2px);
-		box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
-		border-color: #ffd700;
-	}
-
-	.achievement-card.locked {
-		opacity: 0.4;
-		filter: grayscale(1);
-	}
-
-	.achievement-emoji {
-		font-size: 48px;
-		line-height: 1;
-		flex-shrink: 0;
-	}
-
-	.achievement-info {
-		flex: 1;
-		min-width: 0;
-	}
-
-	.achievement-name {
-		font-size: 18px;
-		font-weight: bold;
-		color: #ffd700;
-		margin-bottom: 4px;
-	}
-
-	.achievement-description {
-		font-size: 14px;
-		color: #d4af37;
-		margin-bottom: 8px;
-		line-height: 1.4;
-	}
-
-	.achievement-reward {
-		font-size: 13px;
-		color: #90ee90;
-		font-weight: 600;
-		padding: 4px 8px;
-		background: rgba(144, 238, 144, 0.1);
-		border-radius: 6px;
-		display: inline-block;
-	}
-
-	/* Scrollbar styling */
-	.achievements-grid::-webkit-scrollbar {
-		width: 8px;
-	}
-
-	.achievements-grid::-webkit-scrollbar-track {
-		background: rgba(0, 0, 0, 0.2);
-		border-radius: 4px;
-	}
-
-	.achievements-grid::-webkit-scrollbar-thumb {
-		background: #8b6914;
-		border-radius: 4px;
-	}
-
-	.achievements-grid::-webkit-scrollbar-thumb:hover {
-		background: #ffd700;
-	}
-</style>
