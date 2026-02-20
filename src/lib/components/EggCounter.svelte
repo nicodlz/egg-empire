@@ -4,59 +4,80 @@
 	import { formatNumber } from '../engine/formulas';
 	import { gameState } from '../state/gameState.svelte';
 	import { clickEgg } from '../state/actions';
+	import { playTap } from '../audio/tap';
 	import confetti from 'canvas-confetti';
 
-	let displayValue = $state(0);
 	let eggElement: HTMLDivElement;
 	let emojiElement: HTMLDivElement;
+	let counterElement: HTMLDivElement;
 
 	const eggs = $derived(gameState.resources.get('eggs'));
-	const actualValue = $derived(eggs?.amount.toNumber() ?? 0);
 
-	// GSAP counter animation
-	$effect(() => {
-		if (actualValue !== displayValue) {
-			gsap.to({ value: displayValue }, {
-				value: actualValue,
-				duration: 0.5,
-				ease: 'power2.out',
-				onUpdate: function() {
-					displayValue = this.targets()[0].value;
-				}
-			});
-		}
-	});
-
-	function handleClick(event: MouseEvent) {
+	function handleClick(event: MouseEvent | TouchEvent) {
 		clickEgg();
+		playTap();
 
-		// Confetti at click position
+		// Get click position for confetti
 		const rect = eggElement.getBoundingClientRect();
-		const x = (event.clientX - rect.left) / rect.width;
-		const y = (event.clientY - rect.top) / rect.height;
+		let clientX: number, clientY: number;
+		if ('touches' in event) {
+			clientX = event.changedTouches[0].clientX;
+			clientY = event.changedTouches[0].clientY;
+		} else {
+			clientX = event.clientX;
+			clientY = event.clientY;
+		}
 
+		// Confetti burst from tap point
 		confetti({
-			particleCount: 3,
-			spread: 40,
-			startVelocity: 15,
-			origin: { x, y },
-			colors: ['#FFD700', '#FF8C42'],
-			scalar: 0.6,
-			gravity: 1.2,
-			ticks: 100
+			particleCount: 5,
+			spread: 50,
+			startVelocity: 20,
+			origin: { 
+				x: clientX / window.innerWidth, 
+				y: clientY / window.innerHeight 
+			},
+			colors: ['#FFD700', '#FF8C42', '#FFF8E7'],
+			scalar: 0.7,
+			gravity: 1.5,
+			ticks: 80
 		});
 
-		// GSAP bounce animation on the egg emoji only
-		gsap.fromTo(emojiElement,
+		// Kill any running tween first for snappy feel
+		gsap.killTweensOf(emojiElement);
+
+		// Squash & stretch — egg squishes down then bounces up
+		gsap.timeline()
+			.to(emojiElement, {
+				scaleX: 1.15,
+				scaleY: 0.85,
+				duration: 0.06,
+				ease: 'power2.in'
+			})
+			.to(emojiElement, {
+				scaleX: 0.9,
+				scaleY: 1.2,
+				duration: 0.08,
+				ease: 'power2.out'
+			})
+			.to(emojiElement, {
+				scaleX: 1,
+				scaleY: 1,
+				duration: 0.15,
+				ease: 'elastic.out(1, 0.4)'
+			});
+
+		// Quick counter bump
+		gsap.fromTo(counterElement,
 			{ scale: 1 },
-			{ 
-				scale: 1.2, 
-				duration: 0.1,
-				yoyo: true,
-				repeat: 1,
-				ease: 'back.inOut'
-			}
+			{ scale: 1.15, duration: 0.08, yoyo: true, repeat: 1, ease: 'power2.out' }
 		);
+
+		// Random small rotation wiggle
+		const wiggle = (Math.random() - 0.5) * 8;
+		gsap.timeline()
+			.to(emojiElement, { rotation: wiggle, duration: 0.05 })
+			.to(emojiElement, { rotation: 0, duration: 0.2, ease: 'elastic.out(1, 0.3)' });
 	}
 </script>
 
@@ -66,8 +87,8 @@
 		onclick={handleClick}
 		type="button"
 	>
-		<div bind:this={emojiElement} class="text-8xl drop-shadow-lg sm:text-9xl select-none">🥚</div>
-		<div class="big-number mt-3 text-2xl font-bold text-sunset-orange sm:text-3xl">
+		<div bind:this={emojiElement} class="text-8xl drop-shadow-lg sm:text-9xl select-none will-change-transform">🥚</div>
+		<div bind:this={counterElement} class="big-number mt-3 text-2xl font-bold text-sunset-orange sm:text-3xl will-change-transform">
 			{eggs ? formatNumber(eggs.amount) : '0'}
 		</div>
 		<div class="mt-1 text-xs uppercase tracking-wider text-gray-500">Eggs</div>
