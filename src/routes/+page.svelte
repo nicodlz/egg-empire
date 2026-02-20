@@ -148,15 +148,16 @@
 
 	<!-- Middle: scrollable content -->
 	<div class="scroll-area">
-		<!-- Phase scene -->
+		<!-- Phase scene — only show highest unlocked -->
 		{#if highestPhase === 'cosmic'}
 			<CosmicScene productionRate={eggsPerSec} />
 		{:else if highestPhase === 'biotech'}
 			<BiotechLab productionRate={eggsPerSec} />
 		{:else if highestPhase === 'industrial'}
 			<FactoryScene productionRate={eggsPerSec} />
+		{:else}
+			<ChickenCoop chickenCount={chickenCount} />
 		{/if}
-		<ChickenCoop chickenCount={chickenCount} />
 
 		<!-- Hatch + Auto-hatch row -->
 		<div class="flex gap-2">
