@@ -72,46 +72,6 @@
 </script>
 
 <div class="game-container game-ui">
-	<!-- Top resource bar -->
-	<ResourceBar />
-
-	<!-- Main game area -->
-	<div class="game-content">
-		<!-- Left column: Egg clicker -->
-		<div class="left-column">
-			<EggCounter />
-			<ProgressBar />
-		</div>
-
-		<!-- Right column: Producers and upgrades -->
-		<div class="right-column">
-			<!-- Producers section -->
-			<section class="section">
-				<h2 class="section-title">Producers</h2>
-				<div class="producers-grid">
-					{#each producers as producer (producer.id)}
-						<ProducerCard {producer} />
-					{/each}
-				</div>
-			</section>
-
-			<!-- Upgrades section -->
-			{#if upgrades.length > 0}
-				<section class="section">
-					<h2 class="section-title">Upgrades</h2>
-					<div class="upgrades-grid">
-						{#each upgrades as upgrade (upgrade.id)}
-							<UpgradeButton {upgrade} />
-						{/each}
-					</div>
-				</section>
-			{/if}
-		</div>
-	</div>
-
-	<!-- Stats panel -->
-	<StatsPanel />
-
 	<!-- Phase transition overlay -->
 	{#if showPhaseTransition}
 		<PhaseTransition 
@@ -119,100 +79,119 @@
 			onComplete={handlePhaseTransitionComplete}
 		/>
 	{/if}
+
+	<!-- Top: compact resource bar -->
+	<ResourceBar />
+
+	<!-- Middle: scrollable content -->
+	<div class="scroll-area">
+		<!-- Producers -->
+		<section class="section">
+			<h2 class="section-title">Producers</h2>
+			<div class="producers-grid">
+				{#each producers as producer (producer.id)}
+					<ProducerCard {producer} />
+				{/each}
+			</div>
+		</section>
+
+		<!-- Upgrades -->
+		{#if upgrades.length > 0}
+			<section class="section">
+				<h2 class="section-title">Upgrades</h2>
+				<div class="upgrades-grid">
+					{#each upgrades as upgrade (upgrade.id)}
+						<UpgradeButton {upgrade} />
+					{/each}
+				</div>
+			</section>
+		{/if}
+	</div>
+
+	<!-- Bottom: egg clicker (fixed) -->
+	<div class="egg-dock">
+		<EggCounter />
+	</div>
+
+	<!-- Stats panel -->
+	<StatsPanel />
 </div>
 
 <style>
 	.game-container {
-		min-height: 100vh;
+		height: 100dvh;
 		display: flex;
 		flex-direction: column;
-		background: linear-gradient(135deg, #FFF8E7 0%, #F5E6D3 100%);
+		background: linear-gradient(180deg, #FFF8E7 0%, #F5E6D3 100%);
+		overflow: hidden;
 	}
 
-	.game-content {
-		display: grid;
-		grid-template-columns: 1fr 2fr;
-		gap: 2rem;
-		padding: 2rem;
-		max-width: 1400px;
-		margin: 0 auto;
-		width: 100%;
-	}
-
-	.left-column {
+	.scroll-area {
+		flex: 1;
+		overflow-y: auto;
+		padding: 0.75rem;
 		display: flex;
 		flex-direction: column;
-		gap: 1.5rem;
-		position: sticky;
-		top: 2rem;
-		height: fit-content;
+		gap: 1rem;
+		-webkit-overflow-scrolling: touch;
 	}
 
-	.right-column {
-		display: flex;
-		flex-direction: column;
-		gap: 2rem;
+	.egg-dock {
+		flex-shrink: 0;
+		padding: 0.5rem 0;
+		background: linear-gradient(0deg, rgba(245, 230, 211, 1) 0%, rgba(245, 230, 211, 0) 100%);
 	}
 
 	.section {
 		background: rgba(255, 255, 255, 0.5);
-		padding: 1.5rem;
+		padding: 1rem;
 		border-radius: 16px;
 		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
 	}
 
 	.section-title {
-		font-size: 1.5rem;
+		font-size: 1.25rem;
 		font-weight: bold;
 		color: #333;
-		margin-bottom: 1rem;
+		margin-bottom: 0.75rem;
 		text-align: center;
 	}
 
 	.producers-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-		gap: 1rem;
+		grid-template-columns: 1fr;
+		gap: 0.75rem;
 	}
 
 	.upgrades-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-		gap: 0.75rem;
+		grid-template-columns: 1fr;
+		gap: 0.5rem;
 	}
 
-	@media (max-width: 1024px) {
-		.game-content {
-			grid-template-columns: 1fr;
-			gap: 1.5rem;
-			padding: 1rem;
+	/* Desktop: side-by-side layout */
+	@media (min-width: 1024px) {
+		.game-container {
+			height: 100vh;
 		}
 
-		.left-column {
-			position: static;
+		.scroll-area {
+			padding: 1.5rem;
+			max-width: 900px;
+			margin: 0 auto;
+			width: 100%;
+		}
+
+		.egg-dock {
+			padding: 1rem 0;
 		}
 
 		.producers-grid {
-			grid-template-columns: 1fr;
+			grid-template-columns: repeat(2, 1fr);
 		}
 
 		.upgrades-grid {
-			grid-template-columns: 1fr;
-		}
-	}
-
-	@media (max-width: 640px) {
-		.game-content {
-			padding: 0.75rem;
-			gap: 1rem;
-		}
-
-		.section {
-			padding: 1rem;
-		}
-
-		.section-title {
-			font-size: 1.25rem;
+			grid-template-columns: repeat(2, 1fr);
 		}
 	}
 </style>

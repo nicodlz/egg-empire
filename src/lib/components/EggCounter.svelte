@@ -60,7 +60,7 @@
 	}
 </script>
 
-<div class="flex flex-col items-center justify-center p-8" bind:this={eggElement}>
+<div class="flex flex-col items-center justify-center pb-4 pt-2" bind:this={eggElement}>
 	<button 
 		class="flex flex-col items-center justify-center bg-transparent border-none outline-none cursor-pointer"
 		onclick={handleClick}
