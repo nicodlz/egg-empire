@@ -92,6 +92,21 @@ export class SaveManager {
 			}
 		});
 
+		// Re-unlock producers/upgrades for unlocked phases
+		// (unlockPhase() skips already-unlocked phases, so we do it manually)
+		state.phases.forEach((phase) => {
+			if (phase.unlocked) {
+				phase.producers.forEach(producerId => {
+					const producer = state.producers.get(producerId);
+					if (producer) producer.unlock();
+				});
+				phase.upgrades.forEach(upgradeId => {
+					const upgrade = state.upgrades.get(upgradeId);
+					if (upgrade) upgrade.unlock();
+				});
+			}
+		});
+
 		// Restore game state
 		state.currentPhase = data.currentPhase;
 		state.totalClicks = data.totalClicks;
