@@ -84,11 +84,12 @@ export class SaveManager {
 			}
 		});
 
-		// Restore phases
+		// Restore phases (re-set in map to trigger SvelteMap reactivity)
 		Object.entries(data.phases).forEach(([id, unlocked]) => {
 			const phase = state.phases.get(id);
 			if (phase) {
 				phase.unlocked = unlocked;
+				state.phases.set(id, { ...phase });
 			}
 		});
 

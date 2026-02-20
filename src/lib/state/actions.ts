@@ -585,6 +585,7 @@ export function unlockPhase(phaseId: string) {
 	if (!phase || phase.unlocked) return false;
 
 	phase.unlocked = true;
+	gameState.phases.set(phaseId, { ...phase }); // trigger SvelteMap reactivity
 	gameState.currentPhase = phaseId;
 
 	// Unlock producers in this phase
