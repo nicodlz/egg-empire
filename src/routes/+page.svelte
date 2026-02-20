@@ -36,7 +36,7 @@
 	const upgrades = $derived(getCurrentPhaseUpgrades());
 	const chickenCount = $derived(gameState.producers.get('chicken')?.owned ?? 0);
 	const eggsPerSec = $derived(getTotalEggsPerSecond().toNumber());
-	const highestPhase = $derived(() => {
+	const highestPhase = $derived.by(() => {
 		if (gameState.phases.get('cosmic')?.unlocked) return 'cosmic';
 		if (gameState.phases.get('biotech')?.unlocked) return 'biotech';
 		if (gameState.phases.get('industrial')?.unlocked) return 'industrial';
@@ -149,11 +149,11 @@
 	<!-- Middle: scrollable content -->
 	<div class="scroll-area">
 		<!-- Phase scene -->
-		{#if highestPhase() === 'cosmic'}
+		{#if highestPhase === 'cosmic'}
 			<CosmicScene productionRate={eggsPerSec} />
-		{:else if highestPhase() === 'biotech'}
+		{:else if highestPhase === 'biotech'}
 			<BiotechLab productionRate={eggsPerSec} />
-		{:else if highestPhase() === 'industrial'}
+		{:else if highestPhase === 'industrial'}
 			<FactoryScene productionRate={eggsPerSec} />
 		{/if}
 		<ChickenCoop chickenCount={chickenCount} />
