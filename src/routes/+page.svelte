@@ -37,9 +37,13 @@
 	const chickenCount = $derived(gameState.producers.get('chicken')?.owned ?? 0);
 	const eggsPerSec = $derived(getTotalEggsPerSecond().toNumber());
 	const highestPhase = $derived.by(() => {
-		if (gameState.phases.get('cosmic')?.unlocked) return 'cosmic';
-		if (gameState.phases.get('biotech')?.unlocked) return 'biotech';
-		if (gameState.phases.get('industrial')?.unlocked) return 'industrial';
+		const cosmic = gameState.phases.get('cosmic')?.unlocked;
+		const biotech = gameState.phases.get('biotech')?.unlocked;
+		const industrial = gameState.phases.get('industrial')?.unlocked;
+		console.log('[DEBUG] phases:', { cosmic, biotech, industrial });
+		if (cosmic) return 'cosmic';
+		if (biotech) return 'biotech';
+		if (industrial) return 'industrial';
 		return 'artisanal';
 	});
 	
