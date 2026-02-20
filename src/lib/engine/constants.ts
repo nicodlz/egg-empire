@@ -5,6 +5,21 @@ export const SAVE_KEY = 'egg-empire-save';
 export const AUTO_SAVE_INTERVAL = 30000; // 30 seconds
 export const MAX_OFFLINE_TIME = 86400000; // 24 hours in ms
 
+// Hatching
+export const HATCH_COST = new Decimal(1); // costs 1 egg to try hatching
+export const HATCH_SUCCESS_RATE = 0.3; // 30% chance of getting a chicken
+export const HATCH_SUCCESS_RATE_BONUS_PER_UPGRADE = 0.05; // upgrades can boost this
+
+// Selling prices
+export const SELL_PRICES = {
+	EGG: new Decimal(1),    // 1 money per egg
+	CHICKEN: new Decimal(50) // 50 money per chicken
+};
+
+// Sell bundles
+export const EGG_BUNDLES = [6, 12, 24, 30, 100] as const;
+export const CHICKEN_BUNDLES = [1, 10, 100] as const;
+
 // Phase unlock thresholds
 export const PHASE_THRESHOLDS = {
 	ARTISANAL: new Decimal(0),
@@ -30,34 +45,34 @@ export const PRODUCERS = {
 		id: 'coop',
 		name: 'Coop',
 		emoji: '🏠',
-		description: 'A small coop to house your chickens',
-		baseCost: new Decimal(100),
+		description: 'House more chickens',
+		baseCost: new Decimal(50),
 		baseProduction: new Decimal(1),
 		growthRate: 1.15,
 		resourceProduced: 'eggs',
-		resourceCost: 'eggs'
+		resourceCost: 'money'
 	},
 	FARM: {
 		id: 'farm',
 		name: 'Farm',
 		emoji: '🌾',
-		description: 'Happy chickens produce more eggs',
-		baseCost: new Decimal(1000),
+		description: 'Large scale egg production',
+		baseCost: new Decimal(500),
 		baseProduction: new Decimal(8),
 		growthRate: 1.15,
 		resourceProduced: 'eggs',
-		resourceCost: 'eggs'
+		resourceCost: 'money'
 	},
 	FEED_OPTIMIZER: {
 		id: 'feed_optimizer',
 		name: 'Feed Optimizer',
 		emoji: '🧪',
-		description: 'Optimized nutrition for maximum production',
-		baseCost: new Decimal(5000),
+		description: 'Better nutrition, more eggs',
+		baseCost: new Decimal(2500),
 		baseProduction: new Decimal(50),
 		growthRate: 1.15,
 		resourceProduced: 'eggs',
-		resourceCost: 'eggs'
+		resourceCost: 'money'
 	},
 	// Industrial phase
 	INCUBATOR: {

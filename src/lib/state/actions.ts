@@ -1,7 +1,7 @@
 import Decimal from 'break_eternity.js';
 import { gameState } from './gameState.svelte';
 import { Upgrade } from '../entities/Upgrade.svelte';
-import { UPGRADES } from '../engine/constants';
+import { UPGRADES, HATCH_COST, HATCH_SUCCESS_RATE, SELL_PRICES } from '../engine/constants';
 import { achievementManager, triggerAchievementCallback } from '../achievements/achievementManager';
 
 /**
@@ -382,6 +382,57 @@ export function clickEgg() {
 		gameState.totalClicks++;
 		gameState.statistics.totalClicks++;
 	}
+}
+
+/**
+ * Try to hatch an egg into a chicken
+ * Returns true if a chicken was born
+ */
+export function hatchEgg(): boolean {
+	const eggs = gameState.resources.get('eggs');
+	if (!eggs || !eggs.canAfford(HATCH_COST)) return false;
+
+	eggs.subtract(HATCH_COST);
+
+	const success = Math.random() < HATCH_SUCCESS_RATE;
+	if (success) {
+		const chicken = gameState.producers.get('chicken');
+		if (chicken) {
+			chicken.owned += 1;
+		}
+	}
+	return success;
+}
+
+/**
+ * Sell eggs for money
+ */
+export function sellEggs(amount: number): boolean {
+	const eggs = gameState.resources.get('eggs');
+	const money = gameState.resources.get('money');
+	if (!eggs || !money) return false;
+
+	const cost = new Decimal(amount);
+	if (!eggs.canAfford(cost)) return false;
+
+	eggs.subtract(cost);
+	money.add(SELL_PRICES.EGG.times(amount));
+	return true;
+}
+
+/**
+ * Sell chickens for money
+ */
+export function sellChickens(amount: number): boolean {
+	const chicken = gameState.producers.get('chicken');
+	const money = gameState.resources.get('money');
+	if (!chicken || !money) return false;
+
+	if (chicken.owned < amount) return false;
+
+	chicken.owned -= amount;
+	money.add(SELL_PRICES.CHICKEN.times(amount));
+	return true;
 }
 
 /**

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import Decimal from 'break_eternity.js';
 	import { GameEngine } from '$lib/engine/GameEngine';
 	import { gameState } from '$lib/state/gameState.svelte';
 	import { initializeUpgrades, updateGame, applyOfflineProgress } from '$lib/state/actions';
@@ -9,9 +10,11 @@
 	import ResourceBar from '$lib/components/ResourceBar.svelte';
 	import ProducerCard from '$lib/components/ProducerCard.svelte';
 	import UpgradeButton from '$lib/components/UpgradeButton.svelte';
-	import ProgressBar from '$lib/components/ProgressBar.svelte';
-	// PhaseTransition removed — using subtle toast instead
+	import SellPanel from '$lib/components/SellPanel.svelte';
+	import ChickenCoop from '$lib/components/ChickenCoop.svelte';
+	import HatchAnimation from '$lib/components/HatchAnimation.svelte';
 	import StatsPanel from '$lib/components/StatsPanel.svelte';
+	import { hatchEgg } from '$lib/state/actions';
 	import AchievementToast from '$lib/components/AchievementToast.svelte';
 	import AchievementPanel from '$lib/components/AchievementPanel.svelte';
 	import { achievementManager, setAchievementCallback } from '$lib/achievements/achievementManager';
@@ -24,8 +27,22 @@
 	let showAchievementPanel = $state(false);
 	let achievementQueue = $state<Achievement[]>([]);
 
-	const producers = $derived(getCurrentPhaseProducers());
+	const producers = $derived(getCurrentPhaseProducers().filter((p: any) => p.id !== 'chicken'));
 	const upgrades = $derived(getCurrentPhaseUpgrades());
+	const chickenCount = $derived(gameState.producers.get('chicken')?.owned ?? 0);
+	
+	let hatchCooldown = $state(false);
+	let hatchAnim: HatchAnimation;
+
+	async function handleHatch() {
+		if (hatchCooldown) return;
+		const eggs = gameState.resources.get('eggs');
+		if (!eggs || !eggs.canAfford(new Decimal(1))) return;
+		hatchCooldown = true;
+		const success = hatchEgg();
+		await hatchAnim.hatch(success);
+		hatchCooldown = false;
+	}
 
 	// Watch for phase unlocks — subtle notification instead of fullscreen
 	let phaseToast = $state('');
@@ -110,8 +127,31 @@
 	<!-- Top: compact resource bar -->
 	<ResourceBar />
 
+	<!-- Hatch animation overlay -->
+	<HatchAnimation bind:this={hatchAnim} />
+
 	<!-- Middle: scrollable content -->
 	<div class="scroll-area">
+		<!-- Chicken coop -->
+		<ChickenCoop chickenCount={chickenCount} />
+
+		<!-- Hatch button -->
+		<button
+			class="flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-all
+				{hatchCooldown ? 'bg-gray-200 text-gray-400' : 'bg-amber-100/80 text-gray-900 active:scale-[0.98]'}"
+			onclick={handleHatch}
+			disabled={hatchCooldown}
+			type="button"
+		>
+			<span class="text-2xl">🥚</span>
+			<span>Hatch an Egg</span>
+			<span class="text-xs text-gray-400 ml-1">(1 egg, 30%)</span>
+		</button>
+
+		<!-- Sell section -->
+		<SellPanel />
+
+		<!-- Producers & upgrades -->
 		<div class="item-list">
 			{#each producers as producer (producer.id)}
 				<ProducerCard {producer} />
@@ -143,34 +183,24 @@
 
 	.achievement-btn {
 		position: fixed;
-		top: 20px;
-		right: 20px;
-		width: 56px;
-		height: 56px;
+		top: 8px;
+		right: 12px;
+		width: 36px;
+		height: 36px;
 		border-radius: 50%;
-		background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-		border: 3px solid #f4a460;
-		font-size: 32px;
+		background: transparent;
+		border: none;
+		font-size: 20px;
 		cursor: pointer;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		box-shadow: 
-			0 4px 12px rgba(0, 0, 0, 0.3),
-			0 0 20px rgba(255, 215, 0, 0.3);
-		transition: all 0.2s;
+		transition: transform 0.2s;
 		z-index: 100;
 	}
 
-	.achievement-btn:hover {
-		transform: scale(1.1) rotate(5deg);
-		box-shadow: 
-			0 6px 16px rgba(0, 0, 0, 0.4),
-			0 0 30px rgba(255, 215, 0, 0.5);
-	}
-
 	.achievement-btn:active {
-		transform: scale(0.95);
+		transform: scale(0.9);
 	}
 
 	.scroll-area {

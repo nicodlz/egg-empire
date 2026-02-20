@@ -18,7 +18,7 @@
 <button
 	class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-all
 		{isAffordable 
-			? 'bg-white/80 shadow-md active:scale-[0.98]' 
+			? 'bg-white/80 active:scale-[0.98]' 
 			: 'bg-white/30 opacity-60'}"
 	onclick={() => buyProducer(producer.id, 1)}
 	disabled={!isAffordable}
@@ -35,6 +35,6 @@
 		<span class="text-xs text-gray-500">+{formatRate(production)}</span>
 	</div>
 	<span class="text-xs font-semibold whitespace-nowrap {isAffordable ? 'text-sunset-orange' : 'text-gray-400'}">
-		{formatNumber(cost)} 🥚
+		{formatNumber(cost)} {producer.resourceCost === 'money' ? '💰' : '🥚'}
 	</span>
 </button>
