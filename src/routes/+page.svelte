@@ -134,9 +134,6 @@
 	<!-- Top: compact resource bar -->
 	<ResourceBar />
 
-	<!-- Hatch animation overlay -->
-	<HatchAnimation bind:this={hatchAnim} />
-
 	<!-- Middle: scrollable content -->
 	<div class="scroll-area">
 		<!-- Chicken coop -->
@@ -154,6 +151,7 @@
 				<span class="text-xl">🥚</span>
 				<span>Hatch</span>
 				<span class="text-xs text-gray-400">(50%)</span>
+				<HatchAnimation bind:this={hatchAnim} />
 			</button>
 			<button
 				class="flex items-center gap-2 rounded-xl px-3 py-3 text-xs font-semibold transition-all
