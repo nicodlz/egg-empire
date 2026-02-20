@@ -18,6 +18,7 @@ export const PRODUCERS = {
 	CHICKEN: {
 		id: 'chicken',
 		name: 'Chicken',
+		emoji: '🐔',
 		description: 'A humble chicken that lays eggs',
 		baseCost: new Decimal(10),
 		baseProduction: new Decimal(0.1),
@@ -28,6 +29,7 @@ export const PRODUCERS = {
 	COOP: {
 		id: 'coop',
 		name: 'Coop',
+		emoji: '🏠',
 		description: 'A small coop to house your chickens',
 		baseCost: new Decimal(100),
 		baseProduction: new Decimal(1),
@@ -37,7 +39,8 @@ export const PRODUCERS = {
 	},
 	FARM: {
 		id: 'farm',
-		name: 'Free-range Farm',
+		name: 'Farm',
+		emoji: '🌾',
 		description: 'Happy chickens produce more eggs',
 		baseCost: new Decimal(1000),
 		baseProduction: new Decimal(8),
@@ -48,6 +51,7 @@ export const PRODUCERS = {
 	FEED_OPTIMIZER: {
 		id: 'feed_optimizer',
 		name: 'Feed Optimizer',
+		emoji: '🧪',
 		description: 'Optimized nutrition for maximum production',
 		baseCost: new Decimal(5000),
 		baseProduction: new Decimal(50),
@@ -58,7 +62,8 @@ export const PRODUCERS = {
 	// Industrial phase
 	INCUBATOR: {
 		id: 'incubator',
-		name: 'Industrial Incubator',
+		name: 'Incubator',
+		emoji: '🏭',
 		description: 'Mass-produce chickens efficiently',
 		baseCost: new Decimal(50000),
 		baseProduction: new Decimal(500),
@@ -68,7 +73,8 @@ export const PRODUCERS = {
 	},
 	FACTORY: {
 		id: 'factory',
-		name: 'Egg Factory',
+		name: 'Factory',
+		emoji: '⚙️',
 		description: 'Automated egg production at scale',
 		baseCost: new Decimal(500000),
 		baseProduction: new Decimal(5000),

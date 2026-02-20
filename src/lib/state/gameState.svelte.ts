@@ -23,6 +23,7 @@ function createGameState() {
 		const producer = new Producer(
 			def.id,
 			def.name,
+			def.emoji,
 			def.description,
 			def.baseCost,
 			def.baseProduction,

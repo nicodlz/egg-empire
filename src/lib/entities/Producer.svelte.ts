@@ -9,6 +9,7 @@ export class Producer {
 	constructor(
 		public id: string,
 		public name: string,
+		public emoji: string,
 		public description: string,
 		public baseCost: Decimal,
 		public baseProduction: Decimal,
