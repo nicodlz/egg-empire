@@ -55,6 +55,8 @@ export interface GameState {
 	lastSaveTime: number;
 	lastTickTime: number;
 	totalPlayTime: number;
+	autoHatchCount: number;
+	autoHatchTimer: number;
 	statistics: GameStatistics;
 }
 
@@ -81,6 +83,7 @@ export interface SerializedGameState {
 	totalClicks: number;
 	clickPower: string;
 	totalPlayTime: number;
+	autoHatchCount: number;
 	statistics: {
 		totalEggsProduced: string;
 		totalClicks: number;

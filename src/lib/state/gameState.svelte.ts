@@ -78,6 +78,8 @@ function createGameState() {
 		lastSaveTime: Date.now(),
 		lastTickTime: performance.now(),
 		totalPlayTime: 0,
+		autoHatchCount: 0,
+		autoHatchTimer: 0,
 		statistics
 	});
 

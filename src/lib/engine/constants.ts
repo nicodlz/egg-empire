@@ -7,8 +7,14 @@ export const MAX_OFFLINE_TIME = 86400000; // 24 hours in ms
 
 // Hatching
 export const HATCH_COST = new Decimal(1); // costs 1 egg to try hatching
-export const HATCH_SUCCESS_RATE = 0.3; // 30% chance of getting a chicken
-export const HATCH_SUCCESS_RATE_BONUS_PER_UPGRADE = 0.05; // upgrades can boost this
+export const HATCH_SUCCESS_RATE = 0.5; // 50% chance of getting a chicken
+export const HATCH_COOLDOWN_MS = 400; // faster hatching
+export const HATCH_SUCCESS_RATE_BONUS_PER_UPGRADE = 0.05;
+
+// Auto-hatch (bought with money)
+export const AUTO_HATCH_BASE_COST = new Decimal(200);
+export const AUTO_HATCH_GROWTH_RATE = 1.3;
+export const AUTO_HATCH_INTERVAL = 2; // seconds between auto-hatches
 
 // Selling prices
 export const SELL_PRICES = {
@@ -36,7 +42,7 @@ export const PRODUCERS = {
 		emoji: '🐔',
 		description: 'A humble chicken that lays eggs',
 		baseCost: new Decimal(10),
-		baseProduction: new Decimal(0.1),
+		baseProduction: new Decimal(0.02),
 		growthRate: 1.15,
 		resourceProduced: 'eggs',
 		resourceCost: 'eggs'
@@ -47,7 +53,7 @@ export const PRODUCERS = {
 		emoji: '🏠',
 		description: 'House more chickens',
 		baseCost: new Decimal(50),
-		baseProduction: new Decimal(1),
+		baseProduction: new Decimal(0.2),
 		growthRate: 1.15,
 		resourceProduced: 'eggs',
 		resourceCost: 'money'
@@ -58,7 +64,7 @@ export const PRODUCERS = {
 		emoji: '🌾',
 		description: 'Large scale egg production',
 		baseCost: new Decimal(500),
-		baseProduction: new Decimal(8),
+		baseProduction: new Decimal(1),
 		growthRate: 1.15,
 		resourceProduced: 'eggs',
 		resourceCost: 'money'
@@ -69,7 +75,7 @@ export const PRODUCERS = {
 		emoji: '🧪',
 		description: 'Better nutrition, more eggs',
 		baseCost: new Decimal(2500),
-		baseProduction: new Decimal(50),
+		baseProduction: new Decimal(5),
 		growthRate: 1.15,
 		resourceProduced: 'eggs',
 		resourceCost: 'money'
@@ -81,7 +87,7 @@ export const PRODUCERS = {
 		emoji: '🏭',
 		description: 'Mass-produce chickens efficiently',
 		baseCost: new Decimal(50000),
-		baseProduction: new Decimal(500),
+		baseProduction: new Decimal(50),
 		growthRate: 1.15,
 		resourceProduced: 'eggs',
 		resourceCost: 'eggs'
@@ -92,7 +98,7 @@ export const PRODUCERS = {
 		emoji: '⚙️',
 		description: 'Automated egg production at scale',
 		baseCost: new Decimal(500000),
-		baseProduction: new Decimal(5000),
+		baseProduction: new Decimal(500),
 		growthRate: 1.15,
 		resourceProduced: 'eggs',
 		resourceCost: 'eggs'
@@ -103,7 +109,7 @@ export const PRODUCERS = {
 		emoji: '🔄',
 		description: 'Continuous flow production line',
 		baseCost: new Decimal(5000000),
-		baseProduction: new Decimal(50000),
+		baseProduction: new Decimal(5000),
 		growthRate: 1.14,
 		resourceProduced: 'eggs',
 		resourceCost: 'eggs'
@@ -114,7 +120,7 @@ export const PRODUCERS = {
 		emoji: '🏭',
 		description: 'Industrial complex dominating the landscape',
 		baseCost: new Decimal(50000000),
-		baseProduction: new Decimal(500000),
+		baseProduction: new Decimal(50000),
 		growthRate: 1.13,
 		resourceProduced: 'eggs',
 		resourceCost: 'eggs'
@@ -126,7 +132,7 @@ export const PRODUCERS = {
 		emoji: '🧬',
 		description: 'Unlock the secrets of perfect eggs',
 		baseCost: new Decimal(500000000),
-		baseProduction: new Decimal(5000000),
+		baseProduction: new Decimal(500000),
 		growthRate: 1.16,
 		resourceProduced: 'eggs',
 		resourceCost: 'eggs'
@@ -137,7 +143,7 @@ export const PRODUCERS = {
 		emoji: '🔬',
 		description: 'Engineer superior egg-laying organisms',
 		baseCost: new Decimal(5000000000),
-		baseProduction: new Decimal(50000000),
+		baseProduction: new Decimal(5000000),
 		growthRate: 1.15,
 		resourceProduced: 'eggs',
 		resourceCost: 'eggs'
@@ -148,7 +154,7 @@ export const PRODUCERS = {
 		emoji: '🖨️',
 		description: 'Print chickens molecule by molecule',
 		baseCost: new Decimal(50000000000),
-		baseProduction: new Decimal(500000000),
+		baseProduction: new Decimal(50000000),
 		growthRate: 1.14,
 		resourceProduced: 'eggs',
 		resourceCost: 'eggs'
@@ -159,7 +165,7 @@ export const PRODUCERS = {
 		emoji: '🧫',
 		description: 'Accelerate millions of years in seconds',
 		baseCost: new Decimal(500000000000),
-		baseProduction: new Decimal(5000000000),
+		baseProduction: new Decimal(500000000),
 		growthRate: 1.17,
 		resourceProduced: 'eggs',
 		resourceCost: 'eggs'
@@ -171,7 +177,7 @@ export const PRODUCERS = {
 		emoji: '🛸',
 		description: 'Zero-gravity egg production',
 		baseCost: new Decimal(5000000000000),
-		baseProduction: new Decimal(50000000000),
+		baseProduction: new Decimal(5000000000),
 		growthRate: 1.18,
 		resourceProduced: 'eggs',
 		resourceCost: 'eggs'
@@ -182,7 +188,7 @@ export const PRODUCERS = {
 		emoji: '🌙',
 		description: 'Lunar farms stretch across craters',
 		baseCost: new Decimal(50000000000000),
-		baseProduction: new Decimal(500000000000),
+		baseProduction: new Decimal(50000000000),
 		growthRate: 1.16,
 		resourceProduced: 'eggs',
 		resourceCost: 'eggs'
@@ -193,7 +199,7 @@ export const PRODUCERS = {
 		emoji: '⭐',
 		description: 'Harness a star to power egg production',
 		baseCost: new Decimal(500000000000000),
-		baseProduction: new Decimal(5000000000000),
+		baseProduction: new Decimal(500000000000),
 		growthRate: 1.15,
 		resourceProduced: 'eggs',
 		resourceCost: 'eggs'
@@ -204,7 +210,7 @@ export const PRODUCERS = {
 		emoji: '🌌',
 		description: 'Extract eggs from parallel universes',
 		baseCost: new Decimal(5000000000000000),
-		baseProduction: new Decimal(50000000000000),
+		baseProduction: new Decimal(5000000000000),
 		growthRate: 1.12,
 		resourceProduced: 'eggs',
 		resourceCost: 'eggs'

@@ -14,7 +14,8 @@
 	import ChickenCoop from '$lib/components/ChickenCoop.svelte';
 	import HatchAnimation from '$lib/components/HatchAnimation.svelte';
 	import StatsPanel from '$lib/components/StatsPanel.svelte';
-	import { hatchEgg } from '$lib/state/actions';
+	import { hatchEgg, buyAutoHatch, getAutoHatchCost } from '$lib/state/actions';
+	import { formatNumber } from '$lib/engine/formulas';
 	import AchievementToast from '$lib/components/AchievementToast.svelte';
 	import AchievementPanel from '$lib/components/AchievementPanel.svelte';
 	import { achievementManager, setAchievementCallback } from '$lib/achievements/achievementManager';
@@ -33,6 +34,12 @@
 	
 	let hatchCooldown = $state(false);
 	let hatchAnim: HatchAnimation;
+
+	const autoHatchCost = $derived(getAutoHatchCost());
+	const canAffordAutoHatch = $derived(() => {
+		const money = gameState.resources.get('money');
+		return money ? money.canAfford(getAutoHatchCost()) : false;
+	});
 
 	async function handleHatch() {
 		if (hatchCooldown) return;
@@ -135,18 +142,33 @@
 		<!-- Chicken coop -->
 		<ChickenCoop chickenCount={chickenCount} />
 
-		<!-- Hatch button -->
-		<button
-			class="flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-all
-				{hatchCooldown ? 'bg-gray-200 text-gray-400' : 'bg-amber-100/80 text-gray-900 active:scale-[0.98]'}"
-			onclick={handleHatch}
-			disabled={hatchCooldown}
-			type="button"
-		>
-			<span class="text-2xl">🥚</span>
-			<span>Hatch an Egg</span>
-			<span class="text-xs text-gray-400 ml-1">(1 egg, 30%)</span>
-		</button>
+		<!-- Hatch + Auto-hatch row -->
+		<div class="flex gap-2">
+			<button
+				class="flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-all
+					{hatchCooldown ? 'bg-gray-200 text-gray-400' : 'bg-amber-100/80 text-gray-900 active:scale-[0.98]'}"
+				onclick={handleHatch}
+				disabled={hatchCooldown}
+				type="button"
+			>
+				<span class="text-xl">🥚</span>
+				<span>Hatch</span>
+				<span class="text-xs text-gray-400">(50%)</span>
+			</button>
+			<button
+				class="flex items-center gap-2 rounded-xl px-3 py-3 text-xs font-semibold transition-all
+					{canAffordAutoHatch() ? 'bg-green-100/80 text-green-800 active:scale-[0.98]' : 'bg-white/30 text-gray-400'}"
+				onclick={() => buyAutoHatch()}
+				disabled={!canAffordAutoHatch()}
+				type="button"
+			>
+				<span class="text-lg">🤖</span>
+				<div class="flex flex-col text-left">
+					<span>Auto-Hatch</span>
+					<span class="text-[10px] opacity-70">×{gameState.autoHatchCount} — {formatNumber(autoHatchCost)} 💰</span>
+				</div>
+			</button>
+		</div>
 
 		<!-- Sell section -->
 		<SellPanel />

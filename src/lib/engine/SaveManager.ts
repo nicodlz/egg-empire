@@ -43,6 +43,7 @@ export class SaveManager {
 			totalClicks: state.totalClicks,
 			clickPower: state.clickPower.toString(),
 			totalPlayTime: state.totalPlayTime,
+			autoHatchCount: state.autoHatchCount,
 			statistics: {
 				totalEggsProduced: state.statistics.totalEggsProduced.toString(),
 				totalClicks: state.statistics.totalClicks,
@@ -96,6 +97,7 @@ export class SaveManager {
 		state.totalClicks = data.totalClicks;
 		state.clickPower = new Decimal(data.clickPower);
 		state.totalPlayTime = data.totalPlayTime;
+		state.autoHatchCount = data.autoHatchCount ?? 0;
 
 		// Restore statistics
 		state.statistics.totalEggsProduced = new Decimal(data.statistics.totalEggsProduced);

@@ -1,7 +1,7 @@
 import Decimal from 'break_eternity.js';
 import { gameState } from './gameState.svelte';
 import { Upgrade } from '../entities/Upgrade.svelte';
-import { UPGRADES, HATCH_COST, HATCH_SUCCESS_RATE, SELL_PRICES } from '../engine/constants';
+import { UPGRADES, HATCH_COST, HATCH_SUCCESS_RATE, SELL_PRICES, AUTO_HATCH_BASE_COST, AUTO_HATCH_GROWTH_RATE, AUTO_HATCH_INTERVAL } from '../engine/constants';
 import { achievementManager, triggerAchievementCallback } from '../achievements/achievementManager';
 
 /**
@@ -436,6 +436,28 @@ export function sellChickens(amount: number): boolean {
 }
 
 /**
+ * Buy an auto-hatcher (costs money)
+ */
+export function buyAutoHatch(): boolean {
+	const money = gameState.resources.get('money');
+	if (!money) return false;
+
+	const cost = AUTO_HATCH_BASE_COST.times(Math.pow(AUTO_HATCH_GROWTH_RATE, gameState.autoHatchCount));
+	if (!money.canAfford(cost)) return false;
+
+	money.subtract(cost);
+	gameState.autoHatchCount++;
+	return true;
+}
+
+/**
+ * Get current auto-hatch cost
+ */
+export function getAutoHatchCost(): Decimal {
+	return AUTO_HATCH_BASE_COST.times(Math.pow(AUTO_HATCH_GROWTH_RATE, gameState.autoHatchCount));
+}
+
+/**
  * Buy a producer
  */
 export function buyProducer(producerId: string, amount: number = 1) {
@@ -496,6 +518,23 @@ export function updateGame(deltaTime: number) {
 			resource.add(production);
 		}
 	});
+
+	// Auto-hatch
+	if (gameState.autoHatchCount > 0) {
+		gameState.autoHatchTimer += deltaTime;
+		const interval = AUTO_HATCH_INTERVAL / gameState.autoHatchCount;
+		while (gameState.autoHatchTimer >= interval) {
+			gameState.autoHatchTimer -= interval;
+			const eggs = gameState.resources.get('eggs');
+			if (eggs && eggs.canAfford(HATCH_COST)) {
+				eggs.subtract(HATCH_COST);
+				if (Math.random() < HATCH_SUCCESS_RATE) {
+					const chicken = gameState.producers.get('chicken');
+					if (chicken) chicken.owned += 1;
+				}
+			}
+		}
+	}
 
 	// Check for phase unlocks
 	checkPhaseUnlocks();
