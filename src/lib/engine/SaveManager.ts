@@ -2,6 +2,7 @@ import Decimal from 'break_eternity.js';
 import LZString from 'lz-string';
 import type { GameState, SaveData, SerializedGameState } from './types';
 import { GAME_VERSION, SAVE_KEY } from './constants';
+import { achievementManager } from '../achievements/achievementManager';
 
 export class SaveManager {
 	/**
@@ -39,6 +40,7 @@ export class SaveManager {
 			producers,
 			upgrades,
 			phases,
+			achievements: achievementManager.serialize(),
 			currentPhase: state.currentPhase,
 			totalClicks: state.totalClicks,
 			clickPower: state.clickPower.toString(),
@@ -107,6 +109,11 @@ export class SaveManager {
 				});
 			}
 		});
+
+		// Restore achievements
+		if (data.achievements) {
+			achievementManager.deserialize(data.achievements, state);
+		}
 
 		// Restore game state
 		state.currentPhase = data.currentPhase;

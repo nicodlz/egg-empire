@@ -79,6 +79,7 @@ export interface SerializedGameState {
 	producers: Record<string, { owned: number; multiplier: string }>;
 	upgrades: Record<string, boolean>;
 	phases: Record<string, boolean>;
+	achievements?: string[];
 	currentPhase: string;
 	totalClicks: number;
 	clickPower: string;
