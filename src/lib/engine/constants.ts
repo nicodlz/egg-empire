@@ -23,7 +23,7 @@ export const SELL_PRICES = {
 };
 
 // Sell bundles
-export const EGG_BUNDLES = [6, 12, 24, 30, 100] as const;
+export const EGG_BUNDLES = [6, 12, 24, 30, 100, 1000] as const;
 export const CHICKEN_BUNDLES = [1, 10, 100] as const;
 
 // Phase unlock thresholds
@@ -45,7 +45,7 @@ export const PRODUCERS = {
 		baseProduction: new Decimal(0.02),
 		growthRate: 1.15,
 		resourceProduced: 'eggs',
-		resourceCost: 'eggs'
+		resourceCost: 'money'
 	},
 	COOP: {
 		id: 'coop',
@@ -90,7 +90,7 @@ export const PRODUCERS = {
 		baseProduction: new Decimal(50),
 		growthRate: 1.15,
 		resourceProduced: 'eggs',
-		resourceCost: 'eggs'
+		resourceCost: 'money'
 	},
 	FACTORY: {
 		id: 'factory',
@@ -101,7 +101,7 @@ export const PRODUCERS = {
 		baseProduction: new Decimal(500),
 		growthRate: 1.15,
 		resourceProduced: 'eggs',
-		resourceCost: 'eggs'
+		resourceCost: 'money'
 	},
 	CONVEYOR_BELT: {
 		id: 'conveyor_belt',
@@ -112,7 +112,7 @@ export const PRODUCERS = {
 		baseProduction: new Decimal(5000),
 		growthRate: 1.14,
 		resourceProduced: 'eggs',
-		resourceCost: 'eggs'
+		resourceCost: 'money'
 	},
 	MEGA_FACILITY: {
 		id: 'mega_facility',
@@ -123,7 +123,7 @@ export const PRODUCERS = {
 		baseProduction: new Decimal(50000),
 		growthRate: 1.13,
 		resourceProduced: 'eggs',
-		resourceCost: 'eggs'
+		resourceCost: 'money'
 	},
 	// Biotech phase
 	DNA_SEQUENCER: {
@@ -135,7 +135,7 @@ export const PRODUCERS = {
 		baseProduction: new Decimal(500000),
 		growthRate: 1.16,
 		resourceProduced: 'eggs',
-		resourceCost: 'eggs'
+		resourceCost: 'money'
 	},
 	GENE_LAB: {
 		id: 'gene_lab',
@@ -146,7 +146,7 @@ export const PRODUCERS = {
 		baseProduction: new Decimal(5000000),
 		growthRate: 1.15,
 		resourceProduced: 'eggs',
-		resourceCost: 'eggs'
+		resourceCost: 'money'
 	},
 	BIOPRINTER: {
 		id: 'bioprinter',
@@ -157,7 +157,7 @@ export const PRODUCERS = {
 		baseProduction: new Decimal(50000000),
 		growthRate: 1.14,
 		resourceProduced: 'eggs',
-		resourceCost: 'eggs'
+		resourceCost: 'money'
 	},
 	EVOLUTION_CHAMBER: {
 		id: 'evolution_chamber',
@@ -168,7 +168,7 @@ export const PRODUCERS = {
 		baseProduction: new Decimal(500000000),
 		growthRate: 1.17,
 		resourceProduced: 'eggs',
-		resourceCost: 'eggs'
+		resourceCost: 'money'
 	},
 	// Cosmic phase
 	SPACE_STATION: {
@@ -180,7 +180,7 @@ export const PRODUCERS = {
 		baseProduction: new Decimal(5000000000),
 		growthRate: 1.18,
 		resourceProduced: 'eggs',
-		resourceCost: 'eggs'
+		resourceCost: 'money'
 	},
 	MOON_COLONY: {
 		id: 'moon_colony',
@@ -191,7 +191,7 @@ export const PRODUCERS = {
 		baseProduction: new Decimal(50000000000),
 		growthRate: 1.16,
 		resourceProduced: 'eggs',
-		resourceCost: 'eggs'
+		resourceCost: 'money'
 	},
 	DYSON_SPHERE: {
 		id: 'dyson_sphere',
@@ -202,7 +202,7 @@ export const PRODUCERS = {
 		baseProduction: new Decimal(500000000000),
 		growthRate: 1.15,
 		resourceProduced: 'eggs',
-		resourceCost: 'eggs'
+		resourceCost: 'money'
 	},
 	MULTIVERSE_NEXUS: {
 		id: 'multiverse_nexus',
@@ -213,7 +213,7 @@ export const PRODUCERS = {
 		baseProduction: new Decimal(5000000000000),
 		growthRate: 1.12,
 		resourceProduced: 'eggs',
-		resourceCost: 'eggs'
+		resourceCost: 'money'
 	}
 };
 
@@ -224,7 +224,7 @@ export const UPGRADES = {
 		name: 'Better Hands',
 		description: 'Click 2x as effectively',
 		cost: new Decimal(50),
-		resourceCost: 'eggs',
+		resourceCost: 'money',
 		multiplier: 2
 	},
 	SELECTIVE_BREEDING: {
@@ -232,7 +232,7 @@ export const UPGRADES = {
 		name: 'Selective Breeding',
 		description: 'Chickens produce 2x eggs',
 		cost: new Decimal(200),
-		resourceCost: 'eggs',
+		resourceCost: 'money',
 		producerMultiplier: 2,
 		targetProducer: 'chicken'
 	},
@@ -241,7 +241,7 @@ export const UPGRADES = {
 		name: 'Organic Label',
 		description: 'Eggs sell for 2x money',
 		cost: new Decimal(500),
-		resourceCost: 'eggs',
+		resourceCost: 'money',
 		multiplier: 2
 	},
 	HEATED_COOPS: {
@@ -249,7 +249,7 @@ export const UPGRADES = {
 		name: 'Heated Coops',
 		description: 'Coops produce 3x eggs',
 		cost: new Decimal(2000),
-		resourceCost: 'eggs',
+		resourceCost: 'money',
 		producerMultiplier: 3,
 		targetProducer: 'coop'
 	},
@@ -258,7 +258,7 @@ export const UPGRADES = {
 		name: 'Premium Feed',
 		description: 'All production +50%',
 		cost: new Decimal(10000),
-		resourceCost: 'eggs',
+		resourceCost: 'money',
 		globalMultiplier: 1.5
 	},
 	// Industrial phase upgrades
@@ -267,7 +267,7 @@ export const UPGRADES = {
 		name: 'Industrial Automation',
 		description: 'Incubators produce 2x eggs',
 		cost: new Decimal(100000),
-		resourceCost: 'eggs',
+		resourceCost: 'money',
 		producerMultiplier: 2,
 		targetProducer: 'incubator'
 	},
@@ -276,7 +276,7 @@ export const UPGRADES = {
 		name: 'Quality Control',
 		description: 'Factories produce 2x eggs',
 		cost: new Decimal(1000000),
-		resourceCost: 'eggs',
+		resourceCost: 'money',
 		producerMultiplier: 2,
 		targetProducer: 'factory'
 	},
@@ -285,7 +285,7 @@ export const UPGRADES = {
 		name: 'Efficient Clicks',
 		description: 'Click 3x as effectively',
 		cost: new Decimal(250000),
-		resourceCost: 'eggs',
+		resourceCost: 'money',
 		multiplier: 3
 	},
 	MASS_PRODUCTION: {
@@ -293,7 +293,7 @@ export const UPGRADES = {
 		name: 'Mass Production',
 		description: 'All industrial producers +50%',
 		cost: new Decimal(2500000),
-		resourceCost: 'eggs',
+		resourceCost: 'money',
 		globalMultiplier: 1.5
 	},
 	ROBOTICS: {
@@ -301,7 +301,7 @@ export const UPGRADES = {
 		name: 'Robotics',
 		description: 'Conveyor Belts produce 3x eggs',
 		cost: new Decimal(10000000),
-		resourceCost: 'eggs',
+		resourceCost: 'money',
 		producerMultiplier: 3,
 		targetProducer: 'conveyor_belt'
 	},
@@ -311,7 +311,7 @@ export const UPGRADES = {
 		name: 'Genetic Enhancement',
 		description: 'DNA Sequencers produce 2x eggs',
 		cost: new Decimal(1000000000),
-		resourceCost: 'eggs',
+		resourceCost: 'money',
 		producerMultiplier: 2,
 		targetProducer: 'dna_sequencer'
 	},
@@ -320,7 +320,7 @@ export const UPGRADES = {
 		name: 'CRISPR Technology',
 		description: 'Gene Labs produce 2x eggs',
 		cost: new Decimal(10000000000),
-		resourceCost: 'eggs',
+		resourceCost: 'money',
 		producerMultiplier: 2,
 		targetProducer: 'gene_lab'
 	},
@@ -329,7 +329,7 @@ export const UPGRADES = {
 		name: 'Synthetic Biology',
 		description: 'All biotech producers +50%',
 		cost: new Decimal(25000000000),
-		resourceCost: 'eggs',
+		resourceCost: 'money',
 		globalMultiplier: 1.5
 	},
 	QUANTUM_DNA: {
@@ -337,7 +337,7 @@ export const UPGRADES = {
 		name: 'Quantum DNA',
 		description: 'Bioprinters produce 3x eggs',
 		cost: new Decimal(100000000000),
-		resourceCost: 'eggs',
+		resourceCost: 'money',
 		producerMultiplier: 3,
 		targetProducer: 'bioprinter'
 	},
@@ -346,7 +346,7 @@ export const UPGRADES = {
 		name: 'Super Clicks',
 		description: 'Click 5x as effectively',
 		cost: new Decimal(50000000000),
-		resourceCost: 'eggs',
+		resourceCost: 'money',
 		multiplier: 5
 	},
 	// Cosmic phase upgrades
@@ -355,7 +355,7 @@ export const UPGRADES = {
 		name: 'Zero-G Optimization',
 		description: 'Space Stations produce 2x eggs',
 		cost: new Decimal(10000000000000),
-		resourceCost: 'eggs',
+		resourceCost: 'money',
 		producerMultiplier: 2,
 		targetProducer: 'space_station'
 	},
@@ -364,7 +364,7 @@ export const UPGRADES = {
 		name: 'Lunar Efficiency',
 		description: 'Moon Colonies produce 2x eggs',
 		cost: new Decimal(100000000000000),
-		resourceCost: 'eggs',
+		resourceCost: 'money',
 		producerMultiplier: 2,
 		targetProducer: 'moon_colony'
 	},
@@ -373,7 +373,7 @@ export const UPGRADES = {
 		name: 'Stellar Power',
 		description: 'Dyson Spheres produce 3x eggs',
 		cost: new Decimal(1000000000000000),
-		resourceCost: 'eggs',
+		resourceCost: 'money',
 		producerMultiplier: 3,
 		targetProducer: 'dyson_sphere'
 	},
@@ -382,7 +382,7 @@ export const UPGRADES = {
 		name: 'Interdimensional Boost',
 		description: 'All cosmic producers +50%',
 		cost: new Decimal(5000000000000000),
-		resourceCost: 'eggs',
+		resourceCost: 'money',
 		globalMultiplier: 1.5
 	},
 	COSMIC_CLICKS: {
@@ -390,7 +390,7 @@ export const UPGRADES = {
 		name: 'Cosmic Clicks',
 		description: 'Click 10x as effectively',
 		cost: new Decimal(2500000000000000),
-		resourceCost: 'eggs',
+		resourceCost: 'money',
 		multiplier: 10
 	}
 };

@@ -29,7 +29,7 @@
 		<span class="text-xs text-gray-500">{upgrade.description}</span>
 	</div>
 	<span class="text-xs font-semibold whitespace-nowrap {isAffordable ? 'text-sunset-orange' : 'text-gray-400'}">
-		{formatNumber(upgrade.cost)} 🥚
+		{formatNumber(upgrade.cost)} {upgrade.resourceCost === 'money' ? '💰' : '🥚'}
 	</span>
 </button>
 {/if}
