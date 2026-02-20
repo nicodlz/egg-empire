@@ -15,6 +15,7 @@
 	import HatchAnimation from '$lib/components/HatchAnimation.svelte';
 	import StatsPanel from '$lib/components/StatsPanel.svelte';
 	import { hatchEgg, buyAutoHatch, getAutoHatchCost } from '$lib/state/actions';
+	import { playChicken } from '$lib/audio/chicken';
 	import { formatNumber } from '$lib/engine/formulas';
 	import AchievementToast from '$lib/components/AchievementToast.svelte';
 	import AchievementPanel from '$lib/components/AchievementPanel.svelte';
@@ -47,6 +48,7 @@
 		if (!eggs || !eggs.canAfford(new Decimal(1))) return;
 		hatchCooldown = true;
 		const success = hatchEgg();
+		if (success) playChicken();
 		await hatchAnim.hatch(success);
 		hatchCooldown = false;
 	}
