@@ -8,6 +8,10 @@
 	let modalElement: HTMLDivElement | undefined = $state();
 	let contentElement: HTMLDivElement | undefined = $state();
 
+	const totalEggsProduced = $derived(
+		gameState.resources.get('eggs')?.totalEarned ?? gameState.statistics.totalEggsProduced
+	);
+
 	function toggleStats() {
 		if (!showStats) {
 			showStats = true;
@@ -72,7 +76,7 @@
 					<div class="rounded-xl bg-egg-shell p-4">
 						<div class="text-sm text-gray-600">Total Eggs Produced</div>
 						<div class="mt-1 text-2xl font-bold text-sunset-orange">
-							{formatNumber(gameState.statistics.totalEggsProduced)}
+							{formatNumber(totalEggsProduced)}
 						</div>
 					</div>
 
