@@ -30,9 +30,9 @@ export const CHICKEN_BUNDLES = [1, 10, 100] as const;
 // Phase unlock thresholds
 export const PHASE_THRESHOLDS = {
 	ARTISANAL: new Decimal(0),
-	INDUSTRIAL: new Decimal(50000),
-	BIOTECH: new Decimal(10000000),
-	COSMIC: new Decimal(10000000000)
+	INDUSTRIAL: new Decimal(200000),
+	BIOTECH: new Decimal(50000000),
+	COSMIC: new Decimal(100000000000)
 };
 
 // Producer definitions
@@ -42,9 +42,9 @@ export const PRODUCERS = {
 		name: 'Chicken',
 		emoji: '🐔',
 		description: 'A humble chicken that lays eggs',
-		baseCost: new Decimal(10),
-		baseProduction: new Decimal(0.02),
-		growthRate: 1.15,
+		baseCost: new Decimal(20),
+		baseProduction: new Decimal(0.01),
+		growthRate: 1.17,
 		resourceProduced: 'eggs',
 		resourceCost: 'money'
 	},
@@ -53,9 +53,9 @@ export const PRODUCERS = {
 		name: 'Coop',
 		emoji: '🏠',
 		description: 'Each chicken +50% eggs',
-		baseCost: new Decimal(50),
-		baseProduction: new Decimal(0.5),
-		growthRate: 1.15,
+		baseCost: new Decimal(120),
+		baseProduction: new Decimal(0.15),
+		growthRate: 1.17,
 		resourceProduced: 'chicken_boost',
 		resourceCost: 'money'
 	},
@@ -64,9 +64,9 @@ export const PRODUCERS = {
 		name: 'Farm',
 		emoji: '🌾',
 		description: 'Each chicken +2× eggs',
-		baseCost: new Decimal(500),
-		baseProduction: new Decimal(2),
-		growthRate: 1.15,
+		baseCost: new Decimal(1800),
+		baseProduction: new Decimal(0.6),
+		growthRate: 1.17,
 		resourceProduced: 'chicken_boost',
 		resourceCost: 'money'
 	},
@@ -75,9 +75,9 @@ export const PRODUCERS = {
 		name: 'Feed Optimizer',
 		emoji: '🧪',
 		description: 'Each chicken +5× eggs',
-		baseCost: new Decimal(2500),
-		baseProduction: new Decimal(5),
-		growthRate: 1.15,
+		baseCost: new Decimal(9000),
+		baseProduction: new Decimal(1.8),
+		growthRate: 1.17,
 		resourceProduced: 'chicken_boost',
 		resourceCost: 'money'
 	},
