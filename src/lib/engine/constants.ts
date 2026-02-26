@@ -12,14 +12,15 @@ export const HATCH_COOLDOWN_MS = 400; // faster hatching
 export const HATCH_SUCCESS_RATE_BONUS_PER_UPGRADE = 0.05;
 
 // Auto-hatch (bought with money)
-export const AUTO_HATCH_BASE_COST = new Decimal(200);
+export const AUTO_HATCH_BASE_COST = new Decimal(400);
 export const AUTO_HATCH_GROWTH_RATE = 1.3;
 export const AUTO_HATCH_INTERVAL = 2; // seconds between auto-hatches
 
 // Selling prices
 export const SELL_PRICES = {
 	EGG: new Decimal(1),    // 1 money per egg
-	CHICKEN: new Decimal(50) // 50 money per chicken
+	// Rebalanced: avoid hatch->sell arbitrage dominating all other gameplay loops
+	CHICKEN: new Decimal(8)
 };
 
 // Sell bundles

@@ -1,7 +1,8 @@
 import Decimal from 'break_eternity.js';
 import { gameState } from './gameState.svelte';
+import { calculateBulkCost } from '../engine/formulas';
 import { Upgrade } from '../entities/Upgrade.svelte';
-import { UPGRADES, HATCH_COST, HATCH_SUCCESS_RATE, SELL_PRICES, AUTO_HATCH_BASE_COST, AUTO_HATCH_GROWTH_RATE, AUTO_HATCH_INTERVAL } from '../engine/constants';
+import { UPGRADES, HATCH_COST, HATCH_SUCCESS_RATE, SELL_PRICES, AUTO_HATCH_BASE_COST, AUTO_HATCH_GROWTH_RATE, AUTO_HATCH_INTERVAL, PHASE_THRESHOLDS } from '../engine/constants';
 import { achievementManager, triggerAchievementCallback } from '../achievements/achievementManager';
 
 /**
@@ -467,11 +468,12 @@ export function buyProducer(producerId: string, amount: number = 1) {
 	const resource = gameState.resources.get(producer.resourceCost);
 	if (!resource) return false;
 
-	const cost = producer.getCurrentCost();
-	
-	// For simplicity, buying multiples just multiplies the current cost
-	// A more accurate implementation would use bulk cost calculation
-	const totalCost = cost.times(amount);
+	const totalCost = calculateBulkCost(
+		producer.baseCost,
+		producer.growthRate,
+		producer.owned,
+		amount
+	);
 
 	if (!resource.canAfford(totalCost)) {
 		return false;
@@ -560,19 +562,31 @@ function checkPhaseUnlocks() {
 
 	// Unlock Industrial phase
 	const industrial = gameState.phases.get('industrial');
-	if (industrial && !industrial.unlocked && totalEggs.gte(10000)) {
+	if (
+		industrial &&
+		!industrial.unlocked &&
+		totalEggs.gte(PHASE_THRESHOLDS.INDUSTRIAL)
+	) {
 		unlockPhase('industrial');
 	}
 
 	// Unlock Biotech phase
 	const biotech = gameState.phases.get('biotech');
-	if (biotech && !biotech.unlocked && totalEggs.gte(1000000)) {
+	if (
+		biotech &&
+		!biotech.unlocked &&
+		totalEggs.gte(PHASE_THRESHOLDS.BIOTECH)
+	) {
 		unlockPhase('biotech');
 	}
 
 	// Unlock Cosmic phase
 	const cosmic = gameState.phases.get('cosmic');
-	if (cosmic && !cosmic.unlocked && totalEggs.gte(1000000000)) {
+	if (
+		cosmic &&
+		!cosmic.unlocked &&
+		totalEggs.gte(PHASE_THRESHOLDS.COSMIC)
+	) {
 		unlockPhase('cosmic');
 	}
 }
